@@ -14,3 +14,9 @@ func SetBits(a, b byte) byte {
 func UnsetBits(a, b byte) byte {
 	return a &^ b
 }
+
+// ExtractBits get a byte for subset of another byte
+func ExtractBits(a byte, b, c uint8) byte {
+	var unusedBits = 7 + b - c
+	return a >> b << unusedBits >> unusedBits
+}
