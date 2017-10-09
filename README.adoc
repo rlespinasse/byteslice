@@ -1,0 +1,7 @@
+# gobits 
+
+image:https://travis-ci.org/rlespinasse/gobits.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/gobits"]
+image:https://coveralls.io/repos/github/rlespinasse/gobits/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/gobits?branch=master"]
+
+Play with bytes, and bits
+
