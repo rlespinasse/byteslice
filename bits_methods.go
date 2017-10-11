@@ -1,22 +1,22 @@
 package gobits
 
 // ContainsBits test if b is contains in a
-func ContainsBits(a, b byte) bool {
-	return a&b == b
+func ContainsBits(data, bits byte) bool {
+	return data&bits == bits
 }
 
 // SetBits affect to a, the b bits
-func SetBits(a, b byte) byte {
-	return a | b
+func SetBits(data, bits byte) byte {
+	return data | bits
 }
 
 // UnsetBits unaffect to a, the b bits
-func UnsetBits(a, b byte) byte {
-	return a &^ b
+func UnsetBits(data, bits byte) byte {
+	return data &^ bits
 }
 
 // ExtractBits get a byte for subset of another byte
-func ExtractBits(a byte, b, c uint8) byte {
-	var unusedBits = 7 + b - c
-	return a >> b << unusedBits >> unusedBits
+func ExtractBits(data byte, lsb, msb uint8) byte {
+	var unusedBits = 7 + msb - lsb
+	return data >> msb << unusedBits >> unusedBits
 }
