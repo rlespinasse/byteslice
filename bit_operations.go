@@ -1,5 +1,11 @@
 package gobits
 
+const (
+	byteLength = 8
+	lsb        = 0
+	msb        = byteLength - 1
+)
+
 // ContainsBit test if a bit is contains in the data
 func ContainsBit(data byte, bit uint8) bool {
 	return ContainsBits(data, SetBit(0x00, bit))

@@ -26,7 +26,7 @@ func TestUnsetBits(t *testing.T) {
 }
 
 func TestExtractBits(t *testing.T) {
-	var result = ExtractBits(0xDA, 4, 3)
+	var result = ExtractBits(0xDA, 3, 4)
 	if result != 0x03 {
 		t.Errorf("ExtractBits don't work: %08b", result)
 	}
