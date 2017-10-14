@@ -1,6 +1,7 @@
 package gobits
 
 import (
+	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -32,6 +33,15 @@ func TestRightShift(t *testing.T) {
 	}
 }
 
+func BenchmarkRightShift(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	shift := []uint64{2, 1, 4, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		RightShift(data, shift[rand.Intn(len(shift))])
+	}
+}
+
 func TestLeftShift(t *testing.T) {
 	var val []byte
 	tests := []struct {
@@ -56,6 +66,15 @@ func TestLeftShift(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkLeftShift(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	shift := []uint64{2, 1, 4, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		LeftShift(data, shift[rand.Intn(len(shift))])
 	}
 }
 
@@ -87,5 +106,32 @@ func TestExtractBytes(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkExtractBytes(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05, 0xBA, 0xDE, 0x99}
+	lsb := []uint64{0, 1, 2}
+	msb := []uint64{3, 4, 5}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		ExtractBytes(data, lsb[rand.Intn(len(lsb))], msb[rand.Intn(len(msb))])
+	}
+}
+
+func BenchmarkComputeSize(t *testing.B) {
+	position := []uint64{2, 1, 4, 3, 75, 80, 90}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		computeSize(position[rand.Intn(len(position))], position[rand.Intn(len(position))])
+	}
+}
+
+func BenchmarkTrim(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	newSize := []uint64{2, 1, 4, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		trim(data, newSize[rand.Intn(len(newSize))])
 	}
 }
