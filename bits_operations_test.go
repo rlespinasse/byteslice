@@ -1,6 +1,7 @@
 package gobits
 
 import (
+	"math/rand"
 	"testing"
 )
 
@@ -28,6 +29,15 @@ func TestContainsBits(t *testing.T) {
 	}
 }
 
+func BenchmarkContainsBits(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	bits := []byte{2, 0x20, 0x22, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		ContainsBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+	}
+}
+
 func TestSetBits(t *testing.T) {
 	var val byte
 	tests := []struct {
@@ -48,6 +58,15 @@ func TestSetBits(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkSetBits(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	bits := []byte{2, 0x20, 0x22, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		SetBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
 	}
 }
 
@@ -74,6 +93,15 @@ func TestUnsetBits(t *testing.T) {
 	}
 }
 
+func BenchmarkUnsetBits(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	bits := []byte{2, 0x20, 0x22, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		UnsetBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+	}
+}
+
 func TestExtractBits(t *testing.T) {
 	var val byte
 	tests := []struct {
@@ -95,5 +123,14 @@ func TestExtractBits(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkExtractBits(t *testing.B) {
+	data := []byte{0xf0, 0xff, 0x01, 0x05}
+	bits := []byte{2, 0x20, 0x22, 3}
+	rand.Seed(64)
+	for i := 0; i < t.N; i++ {
+		ExtractBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))], bits[rand.Intn(len(bits))])
 	}
 }
