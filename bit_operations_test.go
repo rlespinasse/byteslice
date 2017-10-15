@@ -1,9 +1,6 @@
 package gobits
 
-import (
-	"math/rand"
-	"testing"
-)
+import "testing"
 
 func TestContainsBit(t *testing.T) {
 	var val bool
@@ -28,12 +25,15 @@ func TestContainsBit(t *testing.T) {
 	}
 }
 
-func BenchmarkContainsBit(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 5, 6, 3}
-	rand.Seed(64)
+func BenchmarkContainsBitTrue(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ContainsBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		ContainsBits(0xf0, 5)
+	}
+}
+
+func BenchmarkContainsBitFalse(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ContainsBits(0xf0, 2)
 	}
 }
 
@@ -60,12 +60,15 @@ func TestSetBit(t *testing.T) {
 	}
 }
 
-func BenchmarkSetBit(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 5, 6, 3}
-	rand.Seed(64)
+func BenchmarkSetBitLow(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		SetBit(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		SetBit(0xf0, 0)
+	}
+}
+
+func BenchmarkSetBitAlreadySet(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		SetBit(0xf0, 5)
 	}
 }
 
@@ -92,12 +95,15 @@ func TestUnsetBit(t *testing.T) {
 	}
 }
 
-func BenchmarkUnsetBit(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 5, 6, 3}
-	rand.Seed(64)
+func BenchmarkUnsetBitHigh(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		UnsetBit(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		UnsetBit(0xf0, 7)
+	}
+}
+
+func BenchmarkUnsetBitAlreadyClear(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		UnsetBit(0xf0, 0)
 	}
 }
 
@@ -124,11 +130,14 @@ func TestGetBit(t *testing.T) {
 	}
 }
 
-func BenchmarkGetBit(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 5, 6, 3}
-	rand.Seed(64)
+func BenchmarkGetBitHighNible(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		GetBit(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		GetBit(0xf0, 4)
+	}
+}
+
+func BenchmarkGetBit(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		GetBit(0xf0, 0)
 	}
 }

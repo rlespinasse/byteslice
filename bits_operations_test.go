@@ -1,9 +1,6 @@
 package gobits
 
-import (
-	"math/rand"
-	"testing"
-)
+import "testing"
 
 func TestContainsBits(t *testing.T) {
 	var val bool
@@ -29,12 +26,21 @@ func TestContainsBits(t *testing.T) {
 	}
 }
 
-func BenchmarkContainsBits(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 0x20, 0x22, 3}
-	rand.Seed(64)
+func BenchmarkContainsBitsTrue(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ContainsBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		ContainsBits(0xf0, 0x20)
+	}
+}
+
+func BenchmarkContainsBitsFalse(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ContainsBits(0xf0, 5)
+	}
+}
+
+func BenchmarkContainsBitsFalseSplit(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ContainsBits(0xf0, 0x22)
 	}
 }
 
@@ -61,12 +67,15 @@ func TestSetBits(t *testing.T) {
 	}
 }
 
-func BenchmarkSetBits(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 0x20, 0x22, 3}
-	rand.Seed(64)
+func BenchmarkSetBitsLow(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		SetBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		SetBits(0xf0, 0)
+	}
+}
+
+func BenchmarkSetBitsHighLow(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		SetBits(0xf0, 0x11)
 	}
 }
 
@@ -93,12 +102,15 @@ func TestUnsetBits(t *testing.T) {
 	}
 }
 
-func BenchmarkUnsetBits(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 0x20, 0x22, 3}
-	rand.Seed(64)
+func BenchmarkUnsetBitsZeroBits(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		UnsetBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))])
+		UnsetBits(0xf0, 7)
+	}
+}
+
+func BenchmarkUnsetBitsSomeBits(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		UnsetBits(0xf0, 0x11)
 	}
 }
 
@@ -126,11 +138,20 @@ func TestExtractBits(t *testing.T) {
 	}
 }
 
-func BenchmarkExtractBits(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	bits := []byte{2, 0x20, 0x22, 3}
-	rand.Seed(64)
+func BenchmarkExtractBitsBottom(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ExtractBits(data[rand.Intn(len(data))], bits[rand.Intn(len(bits))], bits[rand.Intn(len(bits))])
+		ExtractBits(0xf0, 0, 2)
+	}
+}
+
+func BenchmarkExtractBitsLow(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBits(0xf0, 0, 0)
+	}
+}
+
+func BenchmarkExtractBitsOutOfOrder(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBits(0xf0, 2, 0)
 	}
 }

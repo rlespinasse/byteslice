@@ -1,7 +1,6 @@
 package gobits
 
 import (
-	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -13,6 +12,12 @@ func TestRightShift(t *testing.T) {
 	}
 }
 
+func BenchmarkRightShift(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		RightShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
 func TestRightShiftOver1Byte(t *testing.T) {
 	var result = RightShift([]byte{0x99, 0xBA}, 9)
 	if !reflect.DeepEqual(result, []byte{0x74, 0x00}) {
@@ -20,12 +25,9 @@ func TestRightShiftOver1Byte(t *testing.T) {
 	}
 }
 
-func BenchmarkRightShift(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	shift := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
+func BenchmarkRightShiftOver1Byte(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		RightShift(data, shift[rand.Intn(len(shift))])
+		RightShift([]byte{0x99, 0xBA}, 9)
 	}
 }
 
@@ -36,6 +38,12 @@ func TestLeftShift(t *testing.T) {
 	}
 }
 
+func BenchmarkLeftShift(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		LeftShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
 func TestLeftShiftOver1Byte(t *testing.T) {
 	var result = LeftShift([]byte{0x99, 0xBA}, 9)
 	if !reflect.DeepEqual(result, []byte{0x00, 0x4C}) {
@@ -43,12 +51,9 @@ func TestLeftShiftOver1Byte(t *testing.T) {
 	}
 }
 
-func BenchmarkLeftShift(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	shift := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
+func BenchmarkLeftShiftOver1Byte(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		LeftShift(data, shift[rand.Intn(len(shift))])
+		LeftShift([]byte{0x99, 0xBA}, 9)
 	}
 }
 
@@ -59,10 +64,22 @@ func TestExtract1ByteFrom2Bytes(t *testing.T) {
 	}
 }
 
+func BenchmarkExtractBytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA}, 7, 8)
+	}
+}
+
 func TestExtract1ByteFrom3Bytes(t *testing.T) {
 	var result = ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 15, 16)
 	if !reflect.DeepEqual(result, []byte{0x03}) {
 		t.Errorf("Extract1ByteFrom3Bytes don't work: %x", result)
+	}
+}
+
+func BenchmarkExtractBytesFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 15, 16)
 	}
 }
 
@@ -73,6 +90,12 @@ func TestExtract2ByteFrom3Bytes(t *testing.T) {
 	}
 }
 
+func BenchmarkExtract2ByteFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 8, 19)
+	}
+}
+
 func TestExtractAllBytes(t *testing.T) {
 	var result = ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 0, 23)
 	if !reflect.DeepEqual(result, []byte{0x99, 0xBA, 0xDE}) {
@@ -80,13 +103,9 @@ func TestExtractAllBytes(t *testing.T) {
 	}
 }
 
-func BenchmarkExtractBytes(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05, 0xBA, 0xDE, 0x99}
-	lsb := []uint64{0, 1, 2}
-	msb := []uint64{3, 4, 5}
-	rand.Seed(64)
+func BenchmarkExtractAllBytes(t *testing.B) {
 	for i := 0; i < t.N; i++ {
-		ExtractBytes(data, lsb[rand.Intn(len(lsb))], msb[rand.Intn(len(msb))])
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 0, 23)
 	}
 }
 
@@ -98,10 +117,8 @@ func TestComputeSize(t *testing.T) {
 }
 
 func BenchmarkComputeSize(t *testing.B) {
-	position := []uint64{2, 1, 4, 3, 75, 80, 90}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		ComputeSize(position[rand.Intn(len(position))], position[rand.Intn(len(position))])
+		ComputeSize(8, 75)
 	}
 }
 
@@ -113,10 +130,7 @@ func TestTrim(t *testing.T) {
 }
 
 func BenchmarkTrim(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	newSize := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		Trim(data, newSize[rand.Intn(len(newSize))])
+		Trim([]byte{0x99, 0xBA, 0x00, 0x02}, 2)
 	}
 }
