@@ -8,7 +8,8 @@ func TestContainsBit(t *testing.T) {
 	var val bool
 	tests := []struct {
 		name   string
-		a, b   byte
+		data   byte
+		bit    uint8
 		result bool
 	}{
 		{"hi in hi", 0xf0, 5, true},
@@ -16,11 +17,11 @@ func TestContainsBit(t *testing.T) {
 	}
 	for _, tt := range tests {
 
-		val = ContainsBit(tt.a, tt.b)
+		val = ContainsBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: ContainsBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: ContainsBit(0x%x, %v) was %v, should be %v",
 				tt.name,
-				tt.a, tt.b,
+				tt.data, tt.bit,
 				val,
 				tt.result)
 		}
@@ -31,7 +32,8 @@ func TestSetBit(t *testing.T) {
 	var val byte
 	tests := []struct {
 		name   string
-		a, b   byte
+		data   byte
+		bit    uint8
 		result byte
 	}{
 		{"set low bit", 0xf0, 0, 0xf1},
@@ -39,11 +41,11 @@ func TestSetBit(t *testing.T) {
 	}
 	for _, tt := range tests {
 
-		val = SetBit(tt.a, tt.b)
+		val = SetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: SetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: SetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
-				tt.a, tt.b,
+				tt.data, tt.bit,
 				val,
 				tt.result)
 		}
@@ -54,7 +56,8 @@ func TestUnsetBit(t *testing.T) {
 	var val byte
 	tests := []struct {
 		name   string
-		a, b   byte
+		data   byte
+		bit    uint8
 		result byte
 	}{
 		{"unset high bit", 0xf0, 7, 0x70},
@@ -62,11 +65,11 @@ func TestUnsetBit(t *testing.T) {
 	}
 	for _, tt := range tests {
 
-		val = UnsetBit(tt.a, tt.b)
+		val = UnsetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: UnsetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: UnsetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
-				tt.a, tt.b,
+				tt.data, tt.bit,
 				val,
 				tt.result)
 		}
@@ -77,7 +80,8 @@ func TestGetBit(t *testing.T) {
 	var val byte
 	tests := []struct {
 		name   string
-		a, b   byte
+		data   byte
+		bit    uint8
 		result byte
 	}{
 		{"get low bit of high nibble", 0xf0, 4, 0x10},
@@ -85,11 +89,11 @@ func TestGetBit(t *testing.T) {
 	}
 	for _, tt := range tests {
 
-		val = GetBit(tt.a, tt.b)
+		val = GetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: GetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: GetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
-				tt.a, tt.b,
+				tt.data, tt.bit,
 				val,
 				tt.result)
 		}
