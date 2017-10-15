@@ -44,6 +44,12 @@ func BenchmarkRightShiftOver1Byte(t *testing.B) {
 	}
 }
 
+func BenchmarkRightShiftOver1Byte(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		RightShift([]byte{0x99, 0xBA}, 9)
+	}
+}
+
 func TestLeftShift(t *testing.T) {
 	var val []byte
 	tests := []struct {
