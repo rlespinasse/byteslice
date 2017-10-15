@@ -1,8 +1,6 @@
 package gobits
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestContainsBit(t *testing.T) {
 	var val bool
@@ -25,6 +23,18 @@ func TestContainsBit(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkContainsBitTrue(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ContainsBits(0xf0, 5)
+	}
+}
+
+func BenchmarkContainsBitFalse(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ContainsBits(0xf0, 2)
 	}
 }
 
@@ -52,6 +62,18 @@ func TestSetBit(t *testing.T) {
 	}
 }
 
+func BenchmarkSetBitLow(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		SetBit(0xf0, 0)
+	}
+}
+
+func BenchmarkSetBitAlreadySet(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		SetBit(0xf0, 5)
+	}
+}
+
 func TestUnsetBit(t *testing.T) {
 	var val byte
 	tests := []struct {
@@ -76,6 +98,18 @@ func TestUnsetBit(t *testing.T) {
 	}
 }
 
+func BenchmarkUnsetBitHigh(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		UnsetBit(0xf0, 7)
+	}
+}
+
+func BenchmarkUnsetBitAlreadyClear(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		UnsetBit(0xf0, 0)
+	}
+}
+
 func TestGetBit(t *testing.T) {
 	var val byte
 	tests := []struct {
@@ -97,5 +131,17 @@ func TestGetBit(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkGetBitHighNible(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		GetBit(0xf0, 4)
+	}
+}
+
+func BenchmarkGetBit(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		GetBit(0xf0, 0)
 	}
 }

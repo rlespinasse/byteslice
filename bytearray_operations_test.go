@@ -32,6 +32,18 @@ func TestRightShift(t *testing.T) {
 	}
 }
 
+func BenchmarkRightShift(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		RightShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
+func BenchmarkRightShiftOver1Byte(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		RightShift([]byte{0x99, 0xBA}, 9)
+	}
+}
+
 func TestLeftShift(t *testing.T) {
 	var val []byte
 	tests := []struct {
@@ -56,6 +68,18 @@ func TestLeftShift(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkLeftShift(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		LeftShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
+func BenchmarkLeftShiftOver1Byte(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		LeftShift([]byte{0x99, 0xBA}, 9)
 	}
 }
 
@@ -87,5 +111,41 @@ func TestExtractBytes(t *testing.T) {
 				val,
 				tt.result)
 		}
+	}
+}
+
+func BenchmarkExtractBytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA}, 7, 8)
+	}
+}
+
+func BenchmarkExtractBytesFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 15, 16)
+	}
+}
+
+func BenchmarkExtract2ByteFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 8, 19)
+	}
+}
+
+func BenchmarkExtractAllBytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 0, 23)
+	}
+}
+
+func BenchmarkComputeSize(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		computeSize(7, 85)
+	}
+}
+
+func BenchmarkTrim(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		trim([]byte{0x99, 0xBA, 0x00, 0x02}, 2)
 	}
 }
