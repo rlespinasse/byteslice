@@ -19,7 +19,7 @@ func TestContainsBit(t *testing.T) {
 
 		val = ContainsBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: ContainsBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: ContainsBit(0x%x, %v) was %v, should be %v",
 				tt.name,
 				tt.data, tt.bit,
 				val,
@@ -43,7 +43,7 @@ func TestSetBit(t *testing.T) {
 
 		val = SetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: SetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: SetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.bit,
 				val,
@@ -67,7 +67,7 @@ func TestUnsetBit(t *testing.T) {
 
 		val = UnsetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: UnsetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: UnsetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.bit,
 				val,
@@ -91,7 +91,7 @@ func TestGetBit(t *testing.T) {
 
 		val = GetBit(tt.data, tt.bit)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: GetBit(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: GetBit(0x%x, %v) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.bit,
 				val,

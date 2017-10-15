@@ -19,7 +19,7 @@ func TestContainsBits(t *testing.T) {
 
 		val = ContainsBits(tt.data, tt.bits)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: ContainsBits(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: ContainsBits(0x%x, 0x%x) was %v, should be %v",
 				tt.name,
 				tt.data, tt.bits,
 				val,
@@ -42,7 +42,7 @@ func TestSetBits(t *testing.T) {
 
 		val = SetBits(tt.data, tt.bits)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: SetBits(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: SetBits(0x%x, 0x%x) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.bits,
 				val,
@@ -58,14 +58,14 @@ func TestUnsetBits(t *testing.T) {
 		data, bits byte
 		result     byte
 	}{
-		{"unset zero bit", 0xf0, 7, 0xf0},
+		{"unset zero bit", 0xf0, 0x07, 0xf0},
 		{"unset some bits", 0xf0, 0x11, 0xe0},
 	}
 	for _, tt := range tests {
 
 		val = UnsetBits(tt.data, tt.bits)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: UnsetBits(%v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: UnsetBits(0x%x, 0x%x) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.bits,
 				val,
@@ -82,15 +82,15 @@ func TestExtractBits(t *testing.T) {
 		lsbPosition, msbPosition uint8
 		result                   byte
 	}{
-		{"get bottom 3 bits", 0xf2, 0, 2, 2},
-		{"get low bit", 0xf0, 0, 0, 0},
-		{"lsb and msb out of order", 0xf0, 2, 0, 0},
+		{"get bottom 3 bits", 0xf2, 0, 2, 0x02},
+		{"get low bit", 0xf0, 0, 0, 0x00},
+		{"lsb and msb out of order", 0xf0, 2, 0, 0x00},
 	}
 	for _, tt := range tests {
 
 		val = ExtractBits(tt.data, tt.lsbPosition, tt.msbPosition)
 		if val != tt.result {
-			t.Errorf("Test '%v' failed: ExtractBits(%v, %v, %v) was %v, should be %v",
+			t.Errorf("Test '%v' failed: ExtractBits(0x%x, %v, %v) was 0x%x, should be 0x%x",
 				tt.name,
 				tt.data, tt.lsbPosition, tt.msbPosition,
 				val,
