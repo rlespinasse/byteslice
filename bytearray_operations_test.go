@@ -1,7 +1,6 @@
 package gobits
 
 import (
-	"math/rand"
 	"reflect"
 	"testing"
 )
@@ -34,11 +33,14 @@ func TestRightShift(t *testing.T) {
 }
 
 func BenchmarkRightShift(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	shift := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		RightShift(data, shift[rand.Intn(len(shift))])
+		RightShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
+func BenchmarkRightShiftOver1Byte(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		RightShift([]byte{0x99, 0xBA}, 9)
 	}
 }
 
@@ -70,11 +72,14 @@ func TestLeftShift(t *testing.T) {
 }
 
 func BenchmarkLeftShift(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	shift := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		LeftShift(data, shift[rand.Intn(len(shift))])
+		LeftShift([]byte{0x99, 0xBA}, 1)
+	}
+}
+
+func BenchmarkLeftShiftOver1Byte(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		LeftShift([]byte{0x99, 0xBA}, 9)
 	}
 }
 
@@ -110,28 +115,37 @@ func TestExtractBytes(t *testing.T) {
 }
 
 func BenchmarkExtractBytes(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05, 0xBA, 0xDE, 0x99}
-	lsb := []uint64{0, 1, 2}
-	msb := []uint64{3, 4, 5}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		ExtractBytes(data, lsb[rand.Intn(len(lsb))], msb[rand.Intn(len(msb))])
+		ExtractBytes([]byte{0x99, 0xBA}, 7, 8)
+	}
+}
+
+func BenchmarkExtractBytesFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 15, 16)
+	}
+}
+
+func BenchmarkExtract2ByteFrom3Bytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 8, 19)
+	}
+}
+
+func BenchmarkExtractAllBytes(t *testing.B) {
+	for i := 0; i < t.N; i++ {
+		ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 0, 23)
 	}
 }
 
 func BenchmarkComputeSize(t *testing.B) {
-	position := []uint64{2, 1, 4, 3, 75, 80, 90}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		computeSize(position[rand.Intn(len(position))], position[rand.Intn(len(position))])
+		computeSize(7, 85)
 	}
 }
 
 func BenchmarkTrim(t *testing.B) {
-	data := []byte{0xf0, 0xff, 0x01, 0x05}
-	newSize := []uint64{2, 1, 4, 3}
-	rand.Seed(64)
 	for i := 0; i < t.N; i++ {
-		trim(data, newSize[rand.Intn(len(newSize))])
+		trim([]byte{0x99, 0xBA, 0x00, 0x02}, 2)
 	}
 }
