@@ -6,71 +6,86 @@ import (
 )
 
 func TestRightShift(t *testing.T) {
-	var result = RightShift([]byte{0x99, 0xBA}, 1)
-	if !reflect.DeepEqual(result, []byte{0x33, 0x74}) {
-		t.Errorf("RightShift don't work: %x", result)
+	var val []byte
+	tests := []struct {
+		name   string
+		data   []byte
+		shift  uint64
+		result []byte
+	}{
+		{"no shift to the right", []byte{0xDA, 0x99, 0xBA}, 0, []byte{0xDA, 0x99, 0xBA}},
+		{"low shift to the right", []byte{0xDA, 0x99, 0xBA}, 1, []byte{0xB5, 0x33, 0x74}},
+		{"middle shift to the right", []byte{0xDA, 0x99, 0xBA}, 8, []byte{0x99, 0xBA, 0x00}},
+		{"high shift to the right", []byte{0xDA, 0x99, 0xBA}, 16, []byte{0xBA, 0x00, 0x00}},
+		{"overflow shift to the right", []byte{0xDA, 0x99, 0xBA}, 24, []byte{0x00, 0x00, 0x00}},
 	}
-}
+	for _, tt := range tests {
 
-func TestRightShiftOver1Byte(t *testing.T) {
-	var result = RightShift([]byte{0x99, 0xBA}, 9)
-	if !reflect.DeepEqual(result, []byte{0x74, 0x00}) {
-		t.Errorf("RightShiftOver1Byte don't work: %x", result)
+		val = RightShift(tt.data, tt.shift)
+		if !reflect.DeepEqual(val, tt.result) {
+			t.Errorf("Test '%v' failed: RightShift(0x%x, %v) was 0x%x, should be 0x%x",
+				tt.name,
+				tt.data, tt.shift,
+				val,
+				tt.result)
+		}
 	}
 }
 
 func TestLeftShift(t *testing.T) {
-	var result = LeftShift([]byte{0x99, 0xBA}, 1)
-	if !reflect.DeepEqual(result, []byte{0x4C, 0xDD}) {
-		t.Errorf("LeftShift don't work: %x", result)
+	var val []byte
+	tests := []struct {
+		name   string
+		data   []byte
+		shift  uint64
+		result []byte
+	}{
+		{"no shift to the left", []byte{0xDA, 0x99, 0xBA}, 0, []byte{0xDA, 0x99, 0xBA}},
+		{"low shift to the left", []byte{0xDA, 0x99, 0xBA}, 1, []byte{0x6D, 0x4C, 0xDD}},
+		{"middle shift to the left", []byte{0xDA, 0x99, 0xBA}, 8, []byte{0x00, 0xDA, 0x99}},
+		{"high shift to the left", []byte{0xDA, 0x99, 0xBA}, 16, []byte{0x00, 0x00, 0xDA}},
+		{"overflow shift to the left", []byte{0xDA, 0x99, 0xBA}, 24, []byte{0x00, 0x00, 0x00}},
+	}
+	for _, tt := range tests {
+
+		val = LeftShift(tt.data, tt.shift)
+		if !reflect.DeepEqual(val, tt.result) {
+			t.Errorf("Test '%v' failed: LeftShift(0x%x, %v) was 0x%x, should be 0x%x",
+				tt.name,
+				tt.data, tt.shift,
+				val,
+				tt.result)
+		}
 	}
 }
 
-func TestLeftShiftOver1Byte(t *testing.T) {
-	var result = LeftShift([]byte{0x99, 0xBA}, 9)
-	if !reflect.DeepEqual(result, []byte{0x00, 0x4C}) {
-		t.Errorf("LeftShiftOver1Byte don't work: %x", result)
+func TestExtractBytes(t *testing.T) {
+	var val []byte
+	tests := []struct {
+		name                     string
+		data                     []byte
+		lsbPosition, msbPosition uint64
+		result                   []byte
+	}{
+		{"extract nothing", []byte{0xDA, 0x99, 0xBA}, 0, 0, []byte{}},
+		{"extract nothing due to inversed positions", []byte{0xDA, 0x99, 0xBA}, 16, 8, []byte{}},
+		{"extract nothing due to wrong positions", []byte{0xDA, 0x99, 0xBA}, 100, 101, []byte{}},
+		{"extract only in one byte", []byte{0xDA, 0x99, 0xBA}, 5, 7, []byte{0x05}},
+		{"extract one byte over two bytes", []byte{0xDA, 0x99, 0xBA}, 7, 8, []byte{0x03}},
+		{"extract two bytes over three bytes", []byte{0xDA, 0x99, 0xBA}, 6, 17, []byte{0x0A, 0x66}},
+		{"extract three bytes over three bytes", []byte{0xDA, 0x99, 0xBA}, 1, 22, []byte{0x2D, 0x4C, 0xDD}},
+		{"extract all bytes", []byte{0xDA, 0x99, 0xBA}, 0, 23, []byte{0xDA, 0x99, 0xBA}},
+		{"extract all bytes with an overflow position", []byte{0xDA, 0x99, 0xBA}, 0, 100, []byte{0xDA, 0x99, 0xBA}},
 	}
-}
+	for _, tt := range tests {
 
-func TestExtract1ByteFrom2Bytes(t *testing.T) {
-	var result = ExtractBytes([]byte{0x99, 0xBA}, 7, 8)
-	if !reflect.DeepEqual(result, []byte{0x03}) {
-		t.Errorf("Extract1ByteFrom2Bytes don't work: %x", result)
-	}
-}
-
-func TestExtract1ByteFrom3Bytes(t *testing.T) {
-	var result = ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 15, 16)
-	if !reflect.DeepEqual(result, []byte{0x03}) {
-		t.Errorf("Extract1ByteFrom3Bytes don't work: %x", result)
-	}
-}
-
-func TestExtract2ByteFrom3Bytes(t *testing.T) {
-	var result = ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 8, 19)
-	if !reflect.DeepEqual(result, []byte{0x09, 0xBA}) {
-		t.Errorf("Extract2ByteFrom3Bytes don't work: %x", result)
-	}
-}
-
-func TestExtractAllBytes(t *testing.T) {
-	var result = ExtractBytes([]byte{0x99, 0xBA, 0xDE}, 0, 23)
-	if !reflect.DeepEqual(result, []byte{0x99, 0xBA, 0xDE}) {
-		t.Errorf("ExtractAllBytes don't work: %x", result)
-	}
-}
-
-func TestComputeSize(t *testing.T) {
-	var result = ComputeSize(8, 75)
-	if result != 9 {
-		t.Errorf("ComputeSize don't work: %d", result)
-	}
-}
-
-func TestTrim(t *testing.T) {
-	var result = Trim([]byte{0x99, 0xBA, 0x00, 0x02}, 2)
-	if !reflect.DeepEqual(result, []byte{0x00, 0x02}) {
-		t.Errorf("TestTrim don't work: %x", result)
+		val = ExtractBytes(tt.data, tt.lsbPosition, tt.msbPosition)
+		if !reflect.DeepEqual(val, tt.result) {
+			t.Errorf("Test '%v' failed: ExtractBytes(0x%x, %v, %v) was 0x%x, should be 0x%x",
+				tt.name,
+				tt.data, tt.lsbPosition, tt.msbPosition,
+				val,
+				tt.result)
+		}
 	}
 }
