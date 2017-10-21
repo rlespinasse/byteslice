@@ -72,6 +72,102 @@ func TestLeftShift(t *testing.T) {
 	}
 }
 
+var testcasesMask = []struct {
+	name   string
+	data   []byte
+	mask   []byte
+	result []byte
+}{
+	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x88, 0x11, 0xaa}},
+}
+
+func TestMask(t *testing.T) {
+	var val []byte
+	for _, tc := range testcasesMask {
+		t.Run(tc.name, func(t *testing.T) {
+			val = Mask(tc.data, tc.mask)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("Mask(%x, %x) was %x, should be %x",
+					tc.data, tc.mask,
+					val,
+					tc.result)
+			}
+		})
+	}
+}
+
+var testcasesInclusiveMerge = []struct {
+	name   string
+	data   []byte
+	mask   []byte
+	result []byte
+}{
+	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0xff, 0x99, 0xbb}},
+}
+
+func TestInclusiveMerge(t *testing.T) {
+	var val []byte
+	for _, tc := range testcasesInclusiveMerge {
+		t.Run(tc.name, func(t *testing.T) {
+			val = InclusiveMerge(tc.data, tc.mask)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("InclusiveMerge(%x, %x) was %x, should be %x",
+					tc.data, tc.mask,
+					val,
+					tc.result)
+			}
+		})
+	}
+}
+
+var testcasesExclusiveMerge = []struct {
+	name   string
+	data   []byte
+	mask   []byte
+	result []byte
+}{
+	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
+}
+
+func TestExclusiveMerge(t *testing.T) {
+	var val []byte
+	for _, tc := range testcasesExclusiveMerge {
+		t.Run(tc.name, func(t *testing.T) {
+			val = ExclusiveMerge(tc.data, tc.mask)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("ExclusiveMerge(%x, %x) was %x, should be %x",
+					tc.data, tc.mask,
+					val,
+					tc.result)
+			}
+		})
+	}
+}
+
+var testcasesNot = []struct {
+	name   string
+	data   []byte
+	result []byte
+}{
+	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0x25, 0x66, 0x45}},
+}
+
+func TestNot(t *testing.T) {
+	var val []byte
+	for _, tc := range testcasesNot {
+		t.Run(tc.name, func(t *testing.T) {
+			val = Not(tc.data)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("Not(%x) was %x, should be %x",
+					tc.data,
+					val,
+					tc.result)
+			}
+		})
+	}
+}
+
+
 func BenchmarkLeftShift(b *testing.B) {
 	var val []byte
 	for _, tc := range testcasesLeftShift {

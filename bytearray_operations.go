@@ -44,6 +44,83 @@ func LeftShift(data []byte, shift uint64) []byte {
 	return result
 }
 
+// Mask apply AND mask to byte array
+func Mask(data, mask []byte) []byte {
+	var dataLength = len(data)
+	result := make([]byte, dataLength)
+	if dataLength < 1 {
+		return result
+	}
+	copy(result, data)
+
+	var maskLength = len(mask)
+	var operationLength = maskLength
+	// If mask is longer than data, keep operation to data length
+	if maskLength > dataLength {
+		operationLength = dataLength
+	}
+	for i := 0; i < operationLength; i++ {
+		result[i] = data[i] & mask[i]
+	}
+
+	return result
+}
+
+// InclusiveMerge apply OR mask to byte array
+func InclusiveMerge(data, mask []byte) []byte {
+	var dataLength = len(data)
+	result := make([]byte, dataLength)
+	if dataLength < 1 {
+		return result
+	}
+	copy(result, data)
+
+	var maskLength = len(mask)
+	var operationLength = maskLength
+	// If mask is longer than data, keep operation to data length
+	if maskLength > dataLength {
+		operationLength = dataLength;
+	}
+	for i := 0; i < operationLength; i++ {
+		result[i] = data[i] | mask[i]
+	}
+
+	return result
+}
+
+// ExclusiveMerge apply XOR mask to byte array
+func ExclusiveMerge(data, mask []byte) []byte {
+	var dataLength = len(data)
+	result := make([]byte, dataLength)
+	if dataLength < 1 {
+		return result
+	}
+	copy(result, data)
+
+	var maskLength = len(mask)
+	var operationLength = maskLength
+	// If mask is longer than data, keep operation to data length
+	if maskLength > dataLength {
+		operationLength = dataLength
+	}
+
+	for i := 0; i < operationLength; i++ {
+		result[i] = data[i] ^ mask[i]
+	}
+
+	return result
+}
+
+// Not apply NOT operation to byte array
+func Not(data []byte) []byte {
+	var dataLength = len(data)
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = ^data[i]
+	}
+	return result
+}
+
 // ExtractBytes get a byte array as subset of another byte array
 func ExtractBytes(data []byte, lsbPosition, msbPosition uint64) []byte {
 	var maxMsb = uint64(byteLength*len(data) - 1)
