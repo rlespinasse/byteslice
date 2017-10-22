@@ -79,7 +79,7 @@ func InclusiveMerge(data, mask []byte) []byte {
 	var operationLength = maskLength
 	// If mask is longer than data, keep operation to data length
 	if maskLength > dataLength {
-		operationLength = dataLength;
+		operationLength = dataLength
 	}
 	for i := 0; i < operationLength; i++ {
 		result[i] = data[i] | mask[i]
