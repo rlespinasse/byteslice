@@ -47,10 +47,10 @@ func LeftShift(data []byte, shift uint64) []byte {
 // Mask apply AND mask to byte array
 func Mask(data, mask []byte) []byte {
 	var dataLength = len(data)
-	result := make([]byte, dataLength)
 	if dataLength < 1 {
-		return result
+		return data
 	}
+	result := make([]byte, dataLength)
 	copy(result, data)
 
 	var maskLength = len(mask)
@@ -59,55 +59,47 @@ func Mask(data, mask []byte) []byte {
 	if maskLength > dataLength {
 		operationLength = dataLength
 	}
-	for i := 0; i < operationLength; i++ {
-		result[i] = data[i] & mask[i]
+	for i := 1; i < operationLength + 1; i++ {
+		result[dataLength - i] &= mask[maskLength - i]
 	}
-
 	return result
 }
 
-// InclusiveMerge apply OR mask to byte array
-func InclusiveMerge(data, mask []byte) []byte {
-	var dataLength = len(data)
-	result := make([]byte, dataLength)
-	if dataLength < 1 {
-		return result
+// InclusiveMerge two byte arrays
+func InclusiveMerge(data1, data2 []byte) []byte {
+	var shorterData = data1
+	var longerData = data2
+	var longerLength = len(data2)
+	if longerLength < len(data1) {
+		shorterData = data2
+		longerData = data1
+		longerLength = len(data1)
 	}
-	copy(result, data)
+	result := make([]byte, longerLength)
+	copy(result, shorterData)
 
-	var maskLength = len(mask)
-	var operationLength = maskLength
-	// If mask is longer than data, keep operation to data length
-	if maskLength > dataLength {
-		operationLength = dataLength
+	for i := 0; i < longerLength; i++ {
+		result[i] |= longerData[i]
 	}
-	for i := 0; i < operationLength; i++ {
-		result[i] = data[i] | mask[i]
-	}
-
 	return result
 }
 
-// ExclusiveMerge apply XOR mask to byte array
-func ExclusiveMerge(data, mask []byte) []byte {
-	var dataLength = len(data)
-	result := make([]byte, dataLength)
-	if dataLength < 1 {
-		return result
+// ExclusiveMerge two byte arrays
+func ExclusiveMerge(data1, data2 []byte) []byte {
+	var shorterData = data1
+	var longerData = data2
+	var longerLength = len(data2)
+	if longerLength < len(data1) {
+		shorterData = data2
+		longerData = data1
+		longerLength = len(data1)
 	}
-	copy(result, data)
+	result := make([]byte, longerLength)
+	copy(result, shorterData)
 
-	var maskLength = len(mask)
-	var operationLength = maskLength
-	// If mask is longer than data, keep operation to data length
-	if maskLength > dataLength {
-		operationLength = dataLength
+	for i := 0; i < longerLength; i++ {
+		result[i] ^= longerData[i]
 	}
-
-	for i := 0; i < operationLength; i++ {
-		result[i] = data[i] ^ mask[i]
-	}
-
 	return result
 }
 

@@ -78,10 +78,12 @@ var testcasesMask = []struct {
 	mask   []byte
 	result []byte
 }{
-  {"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x88, 0x11, 0xaa}},
-	{"longer mask than data", []byte{0xDA, 0x99, 0xBA},
-		[]byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xaa}, []byte{0x88, 0x11, 0xaa}},
-	{"empty array", []byte{}, []byte{}, []byte{}},
+  {"data and mask of equal length", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x88, 0x11, 0xAA}},
+	{"data shorter than mask", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0x88, 0x11, 0xAA}},
+	{"data longer than mask",  []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}},
+	{"empty mask on data", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"mask on empty data", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{}},
+	{"empty mask on empty data", []byte{}, []byte{}, []byte{}},
 }
 
 func TestMask(t *testing.T) {
@@ -99,26 +101,39 @@ func TestMask(t *testing.T) {
 	}
 }
 
+func BenchmarkMask(b *testing.B) {
+	var val []byte
+	for _, tc := range testcasesMask {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = Mask(tc.data, tc.mask)
+			}
+		})
+	}
+}
+
 var testcasesInclusiveMerge = []struct {
 	name   string
-	data   []byte
-	mask   []byte
+	data1   []byte
+	data2   []byte
 	result []byte
 }{
-	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0xff, 0x99, 0xbb}},
-	{"longer mask than data", []byte{0xDA, 0x99, 0xBA},
-		[]byte{0xAD, 0x11, 0xAB, 0xff, 0x99, 0xbb}, []byte{0xff, 0x99, 0xbb}},
-	{"empty array", []byte{}, []byte{}, []byte{}},
+	{"equal length arrays", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0xFF, 0x99, 0xBB}},
+	{"first array longer",  []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xDA, 0x99, 0xBA}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
+	{"second array longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
+	{"first array empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
+	{"second array empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"empty arrays", []byte{}, []byte{}, []byte{}},
 }
 
 func TestInclusiveMerge(t *testing.T) {
 	var val []byte
 	for _, tc := range testcasesInclusiveMerge {
 		t.Run(tc.name, func(t *testing.T) {
-			val = InclusiveMerge(tc.data, tc.mask)
+			val = InclusiveMerge(tc.data1, tc.data2)
 			if !reflect.DeepEqual(val, tc.result) {
 				t.Errorf("InclusiveMerge(%x, %x) was %x, should be %x",
-					tc.data, tc.mask,
+					tc.data1, tc.data2,
 					val,
 					tc.result)
 			}
@@ -126,28 +141,52 @@ func TestInclusiveMerge(t *testing.T) {
 	}
 }
 
+func BenchmarkInclusiveMerge(b *testing.B) {
+	var val []byte
+	for _, tc := range testcasesInclusiveMerge {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = InclusiveMerge(tc.data1, tc.data2)
+			}
+		})
+	}
+}
+
 var testcasesExclusiveMerge = []struct {
 	name   string
-	data   []byte
-	mask   []byte
+	data1   []byte
+	data2   []byte
 	result []byte
 }{
-	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
-	{"longer mask than data", []byte{0xDA, 0x99, 0xBA},
-		[]byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0x77, 0x88, 0x11}},
-	{"empty array", []byte{}, []byte{}, []byte{}},
+	{"equal length arrays", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
+	{"first array longer",  []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
+	{"second array longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
+	{"first array empty",  []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
+	{"second array empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"empty arrays", []byte{}, []byte{}, []byte{}},
 }
 
 func TestExclusiveMerge(t *testing.T) {
 	var val []byte
 	for _, tc := range testcasesExclusiveMerge {
 		t.Run(tc.name, func(t *testing.T) {
-			val = ExclusiveMerge(tc.data, tc.mask)
+			val = ExclusiveMerge(tc.data1, tc.data2)
 			if !reflect.DeepEqual(val, tc.result) {
 				t.Errorf("ExclusiveMerge(%x, %x) was %x, should be %x",
-					tc.data, tc.mask,
+					tc.data1, tc.data2,
 					val,
 					tc.result)
+			}
+		})
+	}
+}
+
+func BenchmarkExclusiveMerge(b *testing.B) {
+	var val []byte
+	for _, tc := range testcasesExclusiveMerge {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = ExclusiveMerge(tc.data1, tc.data2)
 			}
 		})
 	}
@@ -158,7 +197,8 @@ var testcasesNot = []struct {
 	data   []byte
 	result []byte
 }{
-	{"test", []byte{0xDA, 0x99, 0xBA}, []byte{0x25, 0x66, 0x45}},
+	{"not empty array", []byte{0xDA, 0x99, 0xBA}, []byte{0x25, 0x66, 0x45}},
+	{"empty array", []byte{}, []byte{}},
 }
 
 func TestNot(t *testing.T) {
@@ -176,6 +216,16 @@ func TestNot(t *testing.T) {
 	}
 }
 
+func BenchmarkNot(b *testing.B) {
+	var val []byte
+	for _, tc := range testcasesNot {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = Not(tc.data)
+			}
+		})
+	}
+}
 
 func BenchmarkLeftShift(b *testing.B) {
 	var val []byte
