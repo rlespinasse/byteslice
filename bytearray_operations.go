@@ -55,12 +55,12 @@ func Mask(data, mask []byte) []byte {
 
 	var maskLength = len(mask)
 	var operationLength = maskLength
-	// If mask is longer than data, keep operation to data length
+	// If mask is longer than data, keep operation to (shorter) data length
 	if maskLength > dataLength {
 		operationLength = dataLength
 	}
-	for i := 1; i < operationLength + 1; i++ {
-		result[dataLength - i] &= mask[maskLength - i]
+	for i := 1; i < operationLength+1; i++ {
+		result[dataLength-i] &= mask[maskLength-i]
 	}
 	return result
 }
@@ -76,9 +76,9 @@ func InclusiveMerge(data1, data2 []byte) []byte {
 		longerLength = len(data1)
 	}
 	result := make([]byte, longerLength)
-	copy(result, shorterData)
+	copy(result[longerLength-len(shorterData):], shorterData)
 
-	for i := 0; i < longerLength; i++ {
+	for i := longerLength - 1; i > -1; i-- {
 		result[i] |= longerData[i]
 	}
 	return result
@@ -95,9 +95,9 @@ func ExclusiveMerge(data1, data2 []byte) []byte {
 		longerLength = len(data1)
 	}
 	result := make([]byte, longerLength)
-	copy(result, shorterData)
+	copy(result[longerLength-len(shorterData):], shorterData)
 
-	for i := 0; i < longerLength; i++ {
+	for i := longerLength - 1; i > -1; i-- {
 		result[i] ^= longerData[i]
 	}
 	return result
