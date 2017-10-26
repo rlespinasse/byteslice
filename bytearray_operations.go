@@ -44,6 +44,75 @@ func LeftShift(data []byte, shift uint64) []byte {
 	return result
 }
 
+// Mask apply AND mask to byte array
+func Mask(data, mask []byte) []byte {
+	var dataLength = len(data)
+	if dataLength < 1 {
+		return data
+	}
+	result := make([]byte, dataLength)
+	copy(result, data)
+
+	var maskLength = len(mask)
+	var operationLength = maskLength
+	// If mask is longer than data, keep operation to (shorter) data length
+	if maskLength > dataLength {
+		operationLength = dataLength
+	}
+	for i := 1; i < operationLength+1; i++ {
+		result[dataLength-i] &= mask[maskLength-i]
+	}
+	return result
+}
+
+// InclusiveMerge two byte arrays
+func InclusiveMerge(data1, data2 []byte) []byte {
+	var shorterData = data1
+	var longerData = data2
+	var longerLength = len(data2)
+	if longerLength < len(data1) {
+		shorterData = data2
+		longerData = data1
+		longerLength = len(data1)
+	}
+	result := make([]byte, longerLength)
+	copy(result[longerLength-len(shorterData):], shorterData)
+
+	for i := longerLength - 1; i > -1; i-- {
+		result[i] |= longerData[i]
+	}
+	return result
+}
+
+// ExclusiveMerge two byte arrays
+func ExclusiveMerge(data1, data2 []byte) []byte {
+	var shorterData = data1
+	var longerData = data2
+	var longerLength = len(data2)
+	if longerLength < len(data1) {
+		shorterData = data2
+		longerData = data1
+		longerLength = len(data1)
+	}
+	result := make([]byte, longerLength)
+	copy(result[longerLength-len(shorterData):], shorterData)
+
+	for i := longerLength - 1; i > -1; i-- {
+		result[i] ^= longerData[i]
+	}
+	return result
+}
+
+// Not apply NOT operation to byte array
+func Not(data []byte) []byte {
+	var dataLength = len(data)
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = ^data[i]
+	}
+	return result
+}
+
 // ExtractBytes get a byte array as subset of another byte array
 func ExtractBytes(data []byte, lsbPosition, msbPosition uint64) []byte {
 	var maxMsb = uint64(byteLength*len(data) - 1)
