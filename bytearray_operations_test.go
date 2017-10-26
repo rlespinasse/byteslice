@@ -1,4 +1,4 @@
-package gobits
+package byteness
 
 import (
 	"reflect"

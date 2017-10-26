@@ -1,4 +1,4 @@
-package gobits
+package byteness
 
 // ContainsBits test if some bits is contains in a data
 func ContainsBits(data, bits byte) bool {

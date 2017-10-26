@@ -1,7 +1,9 @@
-# gobits 
+# Byteness 
 
-image:https://travis-ci.org/rlespinasse/gobits.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/gobits"]
-image:https://coveralls.io/repos/github/rlespinasse/gobits/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/gobits?branch=master"]
+Byte[s who support endia]ness
 
-Play with bytes, and bits
+Manipulate Byte arrays with endianess support
 
+## Status
+image:https://travis-ci.org/rlespinasse/byteness.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/byteness"]
+image:https://coveralls.io/repos/github/rlespinasse/byteness/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteness?branch=master"]
