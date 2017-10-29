@@ -9,7 +9,7 @@ func ExampleReverse() {
 	// Output: bada55
 }
 
-func Example() {
+func ExampleLPad() {
 	data := []byte{0x55, 0xDA, 0xBA}
 	
 	fmt.Printf("%x\n", LPad(data, 5, 0x22))
