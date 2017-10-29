@@ -1,5 +1,33 @@
-# byteslice
+= byteslice
 
-## Status
 image:https://travis-ci.org/rlespinasse/byteslice.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/byteslice"]
 image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteslice?branch=master"]
+
+== How to
+
+=== test it with coverage
+
+[source,shell]
+-----
+$ go test -coverprofile=/tmp/byteslice-cover .
+ok  	github.com/rlespinasse/byteslice	0.007s	coverage: 100.0% of statements
+-----
+
+=== launch the benchmark
+
+[source,shell]
+-----
+$ go test -bench=. .
+goos: ...
+goarch: ...
+pkg: github.com/rlespinasse/byteslice
+BenchmarkRBitState/get_low_bit_of_high_nibble-8         	2000000000	         1.99 ns/op
+BenchmarkRBitState/get_low_bit-8                        	2000000000	         1.96 ns/op
+...
+PASS
+ok  	github.com/rlespinasse/byteslice	158.442s
+-----
+
+== Documentation Site
+
+See https://godoc.org/github.com/rlespinasse/byteslice
