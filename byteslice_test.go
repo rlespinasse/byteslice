@@ -5,20 +5,44 @@ import (
 	"testing"
 )
 
-func TestByteSliceReverse(t *testing.T) {
-	data := []byte{0x01, 0x10}
-	result := []byte{0x10, 0x01}
+var tcReverse = []struct {
+	name   string
+	data   []byte
+	result []byte
+}{
+	{"empty byte slice", []byte{}, []byte{}},
+	{"one element byte slice", []byte{0x01}, []byte{0x01}},
+	{"even length byte slice", []byte{0x01, 0x10}, []byte{0x10, 0x01}},
+	{"odd length byte slice", []byte{0x01, 0xFF, 0x10}, []byte{0x10, 0xFF, 0x01}},
+}
 
-	val := ByteSlice(data).Reverse()
-	if !reflect.DeepEqual(val, ByteSlice(result)) {
-		t.Errorf("ByteSlice(%x).Reverse() was %x, should be %x",
-			data,
-			val,
-			result)
+func TestReverse(t *testing.T) {
+	var val []byte
+	for _, tc := range tcReverse {
+		t.Run(tc.name, func(t *testing.T) {
+			val = Reverse(tc.data)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("Reverse(%x) was %x, should be %x",
+					tc.data,
+					val,
+					tc.result)
+			}
+		})
 	}
 }
 
-var testcasesByteSliceLeftShift = []struct {
+func BenchmarkReverse(b *testing.B) {
+	var val []byte
+	for _, tc := range tcReverse {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = Reverse(tc.data)
+			}
+		})
+	}
+}
+
+var tcLShift = []struct {
 	name   string
 	data   []byte
 	shift  uint64
@@ -31,13 +55,13 @@ var testcasesByteSliceLeftShift = []struct {
 	{"overflow shift to the left", []byte{0xDA, 0x99, 0xBA}, 24, []byte{0x00, 0x00, 0x00}},
 }
 
-func TestByteSliceLeftShift(t *testing.T) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceLeftShift {
+func TestLShift(t *testing.T) {
+	var val []byte
+	for _, tc := range tcLShift {
 		t.Run(tc.name, func(t *testing.T) {
-			val = ByteSlice(tc.data).LeftShift(tc.shift)
-			if !reflect.DeepEqual(val, ByteSlice(tc.result)) {
-				t.Errorf("LeftShift(%x, %v) was %x, should be %x",
+			val = LShift(tc.data, tc.shift)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("LShift(%x, %v) was %x, should be %x",
 					tc.data, tc.shift,
 					val,
 					tc.result)
@@ -46,18 +70,18 @@ func TestByteSliceLeftShift(t *testing.T) {
 	}
 }
 
-func BenchmarkByteSliceLeftShift(b *testing.B) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceLeftShift {
+func BenchmarkLShift(b *testing.B) {
+	var val []byte
+	for _, tc := range tcLShift {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = ByteSlice(tc.data).LeftShift(tc.shift)
+				val = LShift(tc.data, tc.shift)
 			}
 		})
 	}
 }
 
-var testcasesByteSliceRightShift = []struct {
+var tcRShift = []struct {
 	name   string
 	data   []byte
 	shift  uint64
@@ -70,13 +94,13 @@ var testcasesByteSliceRightShift = []struct {
 	{"overflow shift to the right", []byte{0xDA, 0x99, 0xBA}, 24, []byte{0x00, 0x00, 0x00}},
 }
 
-func TestByteSliceRightShift(t *testing.T) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceRightShift {
+func TestRShift(t *testing.T) {
+	var val []byte
+	for _, tc := range tcRShift {
 		t.Run(tc.name, func(t *testing.T) {
-			val = ByteSlice(tc.data).RightShift(tc.shift)
-			if !reflect.DeepEqual(val, ByteSlice(tc.result)) {
-				t.Errorf("RightShift(%x, %v) was %x, should be %x",
+			val = RShift(tc.data, tc.shift)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("RShift(%x, %v) was %x, should be %x",
 					tc.data, tc.shift,
 					val,
 					tc.result)
@@ -85,74 +109,18 @@ func TestByteSliceRightShift(t *testing.T) {
 	}
 }
 
-func BenchmarkByteSliceRightShift(b *testing.B) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceRightShift {
+func BenchmarkRShift(b *testing.B) {
+	var val []byte
+	for _, tc := range tcRShift {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = ByteSlice(tc.data).RightShift(tc.shift)
+				val = RShift(tc.data, tc.shift)
 			}
 		})
 	}
 }
 
-func TestByteSliceMaskError(t *testing.T) {
-	val, err := ByteSlice([]byte{0x00, 0x00}).Mask(ByteSlice([]byte{0x00}))
-	if err == nil || val != nil {
-		t.Errorf("Mask with two byte arrays of different size needs to return an error and no value")
-	}
-}
-
-func TestByteSliceInclusiveMergeError(t *testing.T) {
-	val, err := ByteSlice([]byte{0x00, 0x00}).InclusiveMerge(ByteSlice([]byte{0x00}))
-	if err == nil || val != nil {
-		t.Errorf("InclusiveMerge with two byte arrays of different size needs to return an error and no value")
-	}
-}
-
-func TestByteSliceExclusiveMergeError(t *testing.T) {
-	val, err := ByteSlice([]byte{0x00, 0x00}).ExclusiveMerge(ByteSlice([]byte{0x00}))
-	if err == nil || val != nil {
-		t.Errorf("ExclusiveMerge with two byte arrays of different size needs to return an error and no value")
-	}
-}
-
-var testcasesByteSliceNot = []struct {
-	name   string
-	data   []byte
-	result []byte
-}{
-	{"not empty array", []byte{0xDA, 0x99, 0xBA}, []byte{0x25, 0x66, 0x45}},
-	{"empty array", []byte{}, []byte{}},
-}
-
-func TestByteSliceNot(t *testing.T) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceNot {
-		t.Run(tc.name, func(t *testing.T) {
-			val = ByteSlice(tc.data).Not()
-			if !reflect.DeepEqual(val, ByteSlice(tc.result)) {
-				t.Errorf("Not(%x) was %x, should be %x",
-					tc.data,
-					val,
-					tc.result)
-			}
-		})
-	}
-}
-
-func BenchmarkByteSliceNot(b *testing.B) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceNot {
-		b.Run(tc.name, func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				val = ByteSlice(tc.data).Not()
-			}
-		})
-	}
-}
-
-var testcasesByteSliceLeftPad = []struct {
+var tcLPad = []struct {
 	name   string
 	data   []byte
 	length int
@@ -166,13 +134,13 @@ var testcasesByteSliceLeftPad = []struct {
 	{"lpad to negative element size change nothing", []byte{0xDA}, -1, 0x11, []byte{0xDA}},
 }
 
-func TestByteSliceLeftPad(t *testing.T) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceLeftPad {
+func TestLPad(t *testing.T) {
+	var val []byte
+	for _, tc := range tcLPad {
 		t.Run(tc.name, func(t *testing.T) {
-			val = ByteSlice(tc.data).leftPad(tc.length, tc.filler)
-			if !reflect.DeepEqual(val, ByteSlice(tc.result)) {
-				t.Errorf("ByteSlice(%x).leftPad(%v, %v) was %x, should be %x",
+			val = LPad(tc.data, tc.length, tc.filler)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("LPad(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.length, tc.filler,
 					val,
 					tc.result)
@@ -181,18 +149,18 @@ func TestByteSliceLeftPad(t *testing.T) {
 	}
 }
 
-func BenchmarkByteSliceLeftPad(b *testing.B) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceLeftPad {
+func BenchmarkLPad(b *testing.B) {
+	var val []byte
+	for _, tc := range tcLPad {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = ByteSlice(tc.data).leftPad(tc.length, tc.filler)
+				val = LPad(tc.data, tc.length, tc.filler)
 			}
 		})
 	}
 }
 
-var testcasesByteSliceRightPad = []struct {
+var tcRPad = []struct {
 	name   string
 	data   []byte
 	length int
@@ -206,13 +174,13 @@ var testcasesByteSliceRightPad = []struct {
 	{"rpad to negative element size change nothing", []byte{0xDA}, -1, 0x00, []byte{0xDA}},
 }
 
-func TestByteSliceRightPad(t *testing.T) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceRightPad {
+func TestRPad(t *testing.T) {
+	var val []byte
+	for _, tc := range tcRPad {
 		t.Run(tc.name, func(t *testing.T) {
-			val = ByteSlice(tc.data).rightPad(tc.length, tc.filler)
-			if !reflect.DeepEqual(val, ByteSlice(tc.result)) {
-				t.Errorf("ByteSlice(%x).rightPad(%v, %v) was %x, should be %x",
+			val = RPad(tc.data, tc.length, tc.filler)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("RPad(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.length, tc.filler,
 					val,
 					tc.result)
@@ -221,12 +189,68 @@ func TestByteSliceRightPad(t *testing.T) {
 	}
 }
 
-func BenchmarkByteSliceRightPad(b *testing.B) {
-	var val ByteSlice
-	for _, tc := range testcasesByteSliceRightPad {
+func BenchmarkRPad(b *testing.B) {
+	var val []byte
+	for _, tc := range tcRPad {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = ByteSlice(tc.data).rightPad(tc.length, tc.filler)
+				val = RPad(tc.data, tc.length, tc.filler)
+			}
+		})
+	}
+}
+
+func TestUnsetError(t *testing.T) {
+	val, err := Unset([]byte{0x00, 0x00}, []byte{0x00})
+	if err == nil || val != nil {
+		t.Errorf("Unset with two byte slices of different size needs to return an error and no value")
+	}
+}
+
+func TestSetError(t *testing.T) {
+	val, err := Set([]byte{0x00, 0x00}, []byte{0x00})
+	if err == nil || val != nil {
+		t.Errorf("Set with two byte slices of different size needs to return an error and no value")
+	}
+}
+
+func TestToogleError(t *testing.T) {
+	val, err := Toogle([]byte{0x00, 0x00}, []byte{0x00})
+	if err == nil || val != nil {
+		t.Errorf("Toogle with two byte slices of different size needs to return an error and no value")
+	}
+}
+
+var tcFlip = []struct {
+	name   string
+	data   []byte
+	result []byte
+}{
+	{"not empty array", []byte{0xDA, 0x99, 0xBA}, []byte{0x25, 0x66, 0x45}},
+	{"empty array", []byte{}, []byte{}},
+}
+
+func TestFlip(t *testing.T) {
+	var val []byte
+	for _, tc := range tcFlip {
+		t.Run(tc.name, func(t *testing.T) {
+			val = Flip(tc.data)
+			if !reflect.DeepEqual(val, tc.result) {
+				t.Errorf("Flip(%x) was %x, should be %x",
+					tc.data,
+					val,
+					tc.result)
+			}
+		})
+	}
+}
+
+func BenchmarkFlip(b *testing.B) {
+	var val []byte
+	for _, tc := range tcFlip {
+		b.Run(tc.name, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				val = Flip(tc.data)
 			}
 		})
 	}

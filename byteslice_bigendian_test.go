@@ -5,28 +5,28 @@ import (
 	"testing"
 )
 
-var testcasesBigEndianByteSliceMask = []struct {
-	name   string
-	data   []byte
-	mask   []byte
-	result []byte
+var tcLUnset = []struct {
+	name      string
+	data      []byte
+	unsetData []byte
+	result    []byte
 }{
-	{"data and mask of equal length", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x88, 0x11, 0xAA}},
-	{"data shorter than mask", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0x88, 0x11, 0xAA}},
-	{"data longer than mask", []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0xDA, 0x99, 0xBA}, []byte{0x88, 0x11, 0xAA, 0x88, 0x11, 0xAA}},
-	{"empty mask on data", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
-	{"mask on empty data", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{}},
-	{"empty mask on empty data", []byte{}, []byte{}, []byte{}},
+	{"data and unsetData of equal length", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x88, 0x11, 0xAA}},
+	{"data shorter than unsetData", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0x88, 0x11, 0xAA}},
+	{"data longer than unsetData", []byte{0xAD, 0x11, 0xAB, 0x88, 0x11, 0xAA}, []byte{0xDA, 0x99, 0xBA}, []byte{0x88, 0x11, 0xAA, 0x88, 0x11, 0xAA}},
+	{"empty unsetData on data", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"unsetData on empty data", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{}},
+	{"empty unsetData on empty data", []byte{}, []byte{}, []byte{}},
 }
 
-func TestBigEndianByteSliceMask(t *testing.T) {
+func TestLUnset(t *testing.T) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceMask {
+	for _, tc := range tcLUnset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = BigEndianByteSlice(tc.data).Mask(tc.mask)
+			val = LUnset(tc.data, tc.unsetData)
 			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("BigEndianByteSlice(%x).Mask(%x) was %x, should be %x",
-					tc.data, tc.mask,
+				t.Errorf("LUnset(%x, %x) was %x, should be %x",
+					tc.data, tc.unsetData,
 					val,
 					tc.result)
 			}
@@ -34,39 +34,39 @@ func TestBigEndianByteSliceMask(t *testing.T) {
 	}
 }
 
-func BenchmarkBigEndianByteSliceMask(b *testing.B) {
+func BenchmarkLUnset(b *testing.B) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceMask {
+	for _, tc := range tcLUnset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = BigEndianByteSlice(tc.data).Mask(tc.mask)
+				val = LUnset(tc.data, tc.unsetData)
 			}
 		})
 	}
 }
 
-var testcasesBigEndianByteSliceInclusiveMerge = []struct {
-	name        string
-	data        []byte
-	anotherData []byte
-	result      []byte
+var tcLSet = []struct {
+	name    string
+	data    []byte
+	setData []byte
+	result  []byte
 }{
-	{"equal length arrays", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0xFF, 0x99, 0xBB}},
-	{"first array longer", []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xDA, 0x99, 0xBA}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
-	{"second array longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
-	{"first array empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
-	{"second array empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
-	{"empty arrays", []byte{}, []byte{}, []byte{}},
+	{"equal length slices", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0xFF, 0x99, 0xBB}},
+	{"data longer", []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xDA, 0x99, 0xBA}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
+	{"setData longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0xFF, 0x99, 0xBB}, []byte{0xFF, 0x99, 0xBB, 0xFF, 0x99, 0xBB}},
+	{"data empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
+	{"setData empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"empty slices", []byte{}, []byte{}, []byte{}},
 }
 
-func TestBigEndianByteSliceInclusiveMerge(t *testing.T) {
+func TestLSet(t *testing.T) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceInclusiveMerge {
+	for _, tc := range tcLSet {
 		t.Run(tc.name, func(t *testing.T) {
-			val = BigEndianByteSlice(tc.data).InclusiveMerge(tc.anotherData)
+			val = LSet(tc.data, tc.setData)
 			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("BigEndianByteSlice(%x).InclusiveMerge(%x) was %x, should be %x",
-					tc.data, tc.anotherData,
+				t.Errorf("LSet(%x, %x) was %x, should be %x",
+					tc.data, tc.setData,
 					val,
 					tc.result)
 			}
@@ -74,39 +74,39 @@ func TestBigEndianByteSliceInclusiveMerge(t *testing.T) {
 	}
 }
 
-func BenchmarkBigEndianByteSliceInclusiveMerge(b *testing.B) {
+func BenchmarkLSet(b *testing.B) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceInclusiveMerge {
+	for _, tc := range tcLSet {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = BigEndianByteSlice(tc.data).InclusiveMerge(tc.anotherData)
+				val = LSet(tc.data, tc.setData)
 			}
 		})
 	}
 }
 
-var testcasesBigEndianByteSliceExclusiveMerge = []struct {
-	name        string
-	data        []byte
-	anotherData []byte
-	result      []byte
+var tcLToogle = []struct {
+	name       string
+	data       []byte
+	toogleData []byte
+	result     []byte
 }{
-	{"equal length arrays", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
-	{"first array longer", []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
-	{"second array longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
-	{"first array empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
-	{"second array empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
-	{"empty arrays", []byte{}, []byte{}, []byte{}},
+	{"equal length slices", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
+	{"data longer", []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
+	{"toogleData longer", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB, 0x77, 0x88, 0x11}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
+	{"data empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
+	{"toogleData empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"empty slices", []byte{}, []byte{}, []byte{}},
 }
 
-func TestBigEndianByteSliceExclusiveMerge(t *testing.T) {
+func TestLToogle(t *testing.T) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceExclusiveMerge {
+	for _, tc := range tcLToogle {
 		t.Run(tc.name, func(t *testing.T) {
-			val = BigEndianByteSlice(tc.data).ExclusiveMerge(tc.anotherData)
+			val = LToogle(tc.data, tc.toogleData)
 			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("BigEndianByteSlice(%x).ExclusiveMerge(%x) was %x, should be %x",
-					tc.data, tc.anotherData,
+				t.Errorf("LToogle(%x, %x) was %x, should be %x",
+					tc.data, tc.toogleData,
 					val,
 					tc.result)
 			}
@@ -114,22 +114,22 @@ func TestBigEndianByteSliceExclusiveMerge(t *testing.T) {
 	}
 }
 
-func BenchmarkBigEndianByteSliceExclusiveMerge(b *testing.B) {
+func BenchmarkLToogle(b *testing.B) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceExclusiveMerge {
+	for _, tc := range tcLToogle {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = BigEndianByteSlice(tc.data).ExclusiveMerge(tc.anotherData)
+				val = LToogle(tc.data, tc.toogleData)
 			}
 		})
 	}
 }
 
-var testcasesBigEndianByteSliceSubset = []struct {
-	name                     string
-	data                     []byte
-	lsbPosition, msbPosition uint64
-	result                   []byte
+var tcLSubset = []struct {
+	name                                    string
+	data                                    []byte
+	leastSignificantBit, mostSignificantBit uint64
+	result                                  []byte
 }{
 	{"extract nothing", []byte{0xDA, 0x99, 0xBA}, 0, 0, []byte{}},
 	{"extract nothing due to inversed positions", []byte{0xDA, 0x99, 0xBA}, 16, 8, []byte{}},
@@ -142,14 +142,14 @@ var testcasesBigEndianByteSliceSubset = []struct {
 	{"extract all bytes with an overflow position", []byte{0xDA, 0x99, 0xBA}, 0, 100, []byte{0xDA, 0x99, 0xBA}},
 }
 
-func TestBigEndianByteSliceSubset(t *testing.T) {
+func TestLSubset(t *testing.T) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceSubset {
+	for _, tc := range tcLSubset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = BigEndianByteSlice(tc.data).Subset(tc.lsbPosition, tc.msbPosition)
+			val = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
 			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("BigEndianByteSlice(%x).Subset(%v, %v) was %x, should be %x",
-					tc.data, tc.lsbPosition, tc.msbPosition,
+				t.Errorf("LSubset(%x, %v, %v) was %x, should be %x",
+					tc.data, tc.leastSignificantBit, tc.mostSignificantBit,
 					val,
 					tc.result)
 			}
@@ -157,55 +157,12 @@ func TestBigEndianByteSliceSubset(t *testing.T) {
 	}
 }
 
-func BenchmarkBigEndianByteSliceSubset(b *testing.B) {
+func BenchmarkLSubset(b *testing.B) {
 	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceSubset {
+	for _, tc := range tcLSubset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = BigEndianByteSlice(tc.data).Subset(tc.lsbPosition, tc.msbPosition)
-			}
-		})
-	}
-}
-
-var testcasesBigEndianByteSliceLittleEndianSubset = []struct {
-	name                     string
-	data                     []byte
-	lsbPosition, msbPosition uint64
-	result                   []byte
-}{
-	{"extract nothing", []byte{0xDA, 0x99, 0xBA}, 0, 0, []byte{}},
-	{"extract nothing due to inversed positions", []byte{0xDA, 0x99, 0xBA}, 16, 8, []byte{}},
-	{"extract nothing due to wrong positions", []byte{0xDA, 0x99, 0xBA}, 100, 101, []byte{}},
-	{"extract only in one byte", []byte{0xBA, 0x99, 0xDA}, 5, 7, []byte{0x05}},
-	{"extract one byte over two bytes", []byte{0xBA, 0x99, 0xDA}, 7, 8, []byte{0x03}},
-	{"extract two bytes over three bytes", []byte{0xBA, 0x99, 0xDA}, 6, 17, []byte{0x66, 0x0A}},
-	{"extract three bytes over three bytes", []byte{0xBA, 0x99, 0xDA}, 1, 22, []byte{0xDD, 0x4C, 0x2D}},
-	{"extract all bytes", []byte{0xDA, 0x99, 0xBA}, 0, 23, []byte{0xDA, 0x99, 0xBA}},
-	{"extract all bytes with an overflow position", []byte{0xDA, 0x99, 0xBA}, 0, 100, []byte{0xDA, 0x99, 0xBA}},
-}
-
-func TestBigEndianByteSliceLittleEndianSubset(t *testing.T) {
-	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceLittleEndianSubset {
-		t.Run(tc.name, func(t *testing.T) {
-			val = BigEndianByteSlice(tc.data).LittleEndianSubset(tc.lsbPosition, tc.msbPosition)
-			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("BigEndianByteSlice(%x).LittleEndianSubset(%v, %v) was %x, should be %x",
-					tc.data, tc.lsbPosition, tc.msbPosition,
-					val,
-					tc.result)
-			}
-		})
-	}
-}
-
-func BenchmarkBigEndianByteSliceLittleEndianSubset(b *testing.B) {
-	var val []byte
-	for _, tc := range testcasesBigEndianByteSliceLittleEndianSubset {
-		b.Run(tc.name, func(b *testing.B) {
-			for i := 0; i < b.N; i++ {
-				val = BigEndianByteSlice(tc.data).LittleEndianSubset(tc.lsbPosition, tc.msbPosition)
+				val = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
 			}
 		})
 	}

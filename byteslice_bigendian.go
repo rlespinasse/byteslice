@@ -1,86 +1,68 @@
 package byteslice
 
-// BigEndianByteSlice is a ByteSlice who are big endian ordered
-type BigEndianByteSlice ByteSlice
-
-// Mask apply AND mask on the slice
-func (data BigEndianByteSlice) Mask(mask BigEndianByteSlice) BigEndianByteSlice {
+// LUnset apply AND operation on a byte slice with an "unset" byte slice using big endian order.
+func LUnset(data, unsetData []byte) []byte {
 	var dataLength = len(data)
 	if dataLength < 1 {
 		return data
 	}
 
-	var maskLength = len(mask)
-	var operationLength = dataLength
-	var operationCut = dataLength
-	if maskLength > dataLength {
-		operationLength = maskLength
+	unsetDataLength := len(unsetData)
+	operationLength := dataLength
+	operationCut := dataLength
+	if unsetDataLength > dataLength {
+		operationLength = unsetDataLength
 	}
 
-	result, _ := ByteSlice(ByteSlice(data).rightPad(operationLength, 0xFF)).Mask(ByteSlice(mask).rightPad(operationLength, 0xFF))
-	return BigEndianByteSlice(result).newSize(operationCut)
+	result, _ := Unset(RPad(data, operationLength, 0xFF), RPad(unsetData, operationLength, 0xFF))
+	return result[:operationCut]
 }
 
-func (data BigEndianByteSlice) newSize(newSize int) BigEndianByteSlice {
-	return []byte(data)[:newSize]
-}
+// LSet apply OR operation on a byte slice with an "set" byte slice using big endian order.
+func LSet(data, setData []byte) []byte {
+	dataLength := len(data)
+	setDataLength := len(setData)
 
-// InclusiveMerge apply OR operation between this slice and another
-func (data BigEndianByteSlice) InclusiveMerge(anotherData BigEndianByteSlice) BigEndianByteSlice {
-	var dataLength = len(data)
-	var anotherDataLength = len(anotherData)
-
-	var operationLength = dataLength
-	if anotherDataLength > dataLength {
-		operationLength = anotherDataLength
+	operationLength := dataLength
+	if setDataLength > dataLength {
+		operationLength = setDataLength
 	}
 
-	result, _ := ByteSlice(ByteSlice(data).rightPad(operationLength, 0x00)).InclusiveMerge(ByteSlice(anotherData).rightPad(operationLength, 0x00))
-	return BigEndianByteSlice(result)
+	result, _ := Set(RPad(data, operationLength, 0x00), RPad(setData, operationLength, 0x00))
+	return result
 }
 
-// ExclusiveMerge apply XOR operation between this slice and another
-func (data BigEndianByteSlice) ExclusiveMerge(anotherData BigEndianByteSlice) BigEndianByteSlice {
-	var dataLength = len(data)
-	var anotherDataLength = len(anotherData)
+// LToogle apply XOR operation on a byte slice with an "toogle" byte slice using big endian order.
+func LToogle(data, toogleData []byte) []byte {
+	dataLength := len(data)
+	toogleDataLength := len(toogleData)
 
-	var operationLength = dataLength
-	if anotherDataLength > dataLength {
-		operationLength = anotherDataLength
+	operationLength := dataLength
+	if toogleDataLength > dataLength {
+		operationLength = toogleDataLength
 	}
 
-	result, _ := ByteSlice(ByteSlice(data).rightPad(operationLength, 0x00)).ExclusiveMerge(ByteSlice(anotherData).rightPad(operationLength, 0x00))
-
-	return BigEndianByteSlice(result)
+	result, _ := Toogle(RPad(data, operationLength, 0x00), RPad(toogleData, operationLength, 0x00))
+	return result
 }
 
-// Subset extract a subset of this slice
-func (data BigEndianByteSlice) Subset(lsbPosition, msbPosition uint64) BigEndianByteSlice {
-	var maxMsb = uint64(byteLength*len(data) - 1)
+// LSubset get the byte slice of a subset of the big endian ordered data byte defined
+// by the least significant bit and the most significant bit.
+func LSubset(data []byte, leastSignificantBit, mostSignificantBit uint64) []byte {
+	var maxDataMostSignificantBit = uint64(maxBitsLength*len(data) - 1)
 
-	if msbPosition <= lsbPosition || lsbPosition > maxMsb {
-		return make(BigEndianByteSlice, 0)
+	if mostSignificantBit <= leastSignificantBit || leastSignificantBit > maxDataMostSignificantBit {
+		return make([]byte, 0)
 	}
 
-	if msbPosition > maxMsb {
-		msbPosition = maxMsb
+	if mostSignificantBit > maxDataMostSignificantBit {
+		mostSignificantBit = maxDataMostSignificantBit
 	}
 
-	var result = ByteSlice(data).RightShift(maxMsb - msbPosition)
-	var correctiveShift = maxMsb - msbPosition + lsbPosition
-	result = ByteSlice(result).LeftShift(correctiveShift)
+	var result = RShift(data, maxDataMostSignificantBit-mostSignificantBit)
+	var correctiveShift = maxDataMostSignificantBit - mostSignificantBit + leastSignificantBit
+	result = LShift(result, correctiveShift)
 
-	var size = computeSize(lsbPosition, msbPosition)
-	return BigEndianByteSlice(result).trim(size)
-}
-
-// LittleEndianSubset get a byte array as subset of another byte array when byte are in little endian
-func (data BigEndianByteSlice) LittleEndianSubset(lsbPosition, msbPosition uint64) BigEndianByteSlice {
-	var reversedData = ByteSlice(data).Reverse()
-	var result = LittleEndianByteSlice(reversedData).Subset(lsbPosition, msbPosition)
-	return BigEndianByteSlice(ByteSlice(result).Reverse())
-}
-
-func (data BigEndianByteSlice) trim(newSize uint64) BigEndianByteSlice {
-	return data[:newSize]
+	var size = computeSize(leastSignificantBit, mostSignificantBit)
+	return result[:size]
 }

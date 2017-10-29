@@ -5,34 +5,36 @@ import (
 	"math"
 )
 
-// ByteSlice attaches the methods of Interface to []byte without specific ordering
-type ByteSlice []byte
+// Reverse change the order of the byte slice.
+func Reverse(data []byte) []byte {
+	if len(data) < 2 {
+		return data
+	}
+	sliceLength := len(data)
+	sliceHalfLength := int(math.Floor(float64(sliceLength / 2)))
+	reversedSlice := make([]byte, sliceLength)
 
-// Reverse reverse the byte slice
-func (data ByteSlice) Reverse() ByteSlice {
-	var sliceLength = len(data)
-	var reversedSlice = make(ByteSlice, sliceLength)
-
-	for i := range data {
-		reversedSlice[sliceLength-i-1] = data[i]
+	for i := 0; i <= sliceHalfLength; i++ {
+		reversedSlice[i] = data[sliceLength-1-i]
+		reversedSlice[sliceLength-1-i] = data[i]
 	}
 	return reversedSlice
 }
 
-// LeftShift apply left shift operation to byte array data
-func (data ByteSlice) LeftShift(shift uint64) ByteSlice {
+// LShift apply left shift operation to an byte slice.
+func LShift(data []byte, shift uint64) []byte {
 	if shift == 0 {
 		return data
 	}
-	var dataLength = len(data)
-	result := make(ByteSlice, dataLength)
-	if shift > byteLength {
+	dataLength := len(data)
+	result := make([]byte, dataLength)
+	if shift > maxBitsLength {
 		copy(result, data[1:])
-		result = ByteSlice(result).LeftShift(shift - byteLength)
+		result = LShift(result, shift-maxBitsLength)
 	} else {
 		for i := dataLength - 1; i >= 0; i-- {
 			if i > 0 {
-				result[i-1] = data[i] >> (byteLength - shift)
+				result[i-1] = data[i] >> (maxBitsLength - shift)
 			}
 			result[i] = result[i] | (data[i] << shift)
 		}
@@ -40,20 +42,20 @@ func (data ByteSlice) LeftShift(shift uint64) ByteSlice {
 	return result
 }
 
-// RightShift apply right shift operation to byte array data
-func (data ByteSlice) RightShift(shift uint64) ByteSlice {
+// RShift apply right shift operation to an byte slice.
+func RShift(data []byte, shift uint64) []byte {
 	if shift == 0 {
 		return data
 	}
-	var dataLength = len(data)
-	result := make(ByteSlice, dataLength)
-	if shift > byteLength {
-		var shiftedData = append(make(ByteSlice, 1), data[:dataLength-1]...)
-		result = ByteSlice(shiftedData).RightShift(shift - byteLength)
+	dataLength := len(data)
+	result := make([]byte, dataLength)
+	if shift > maxBitsLength {
+		shiftedData := append(make([]byte, 1), data[:dataLength-1]...)
+		result = RShift(shiftedData, shift-maxBitsLength)
 	} else {
 		for i := 0; i < dataLength; i++ {
 			if i < dataLength-1 {
-				result[i+1] = data[i] << (byteLength - shift)
+				result[i+1] = data[i] << (maxBitsLength - shift)
 			}
 			result[i] = result[i] | (data[i] >> shift)
 		}
@@ -61,67 +63,13 @@ func (data ByteSlice) RightShift(shift uint64) ByteSlice {
 	return result
 }
 
-// Mask apply AND mask to a byte array, data and mask must have the same size
-func (data ByteSlice) Mask(mask ByteSlice) (ByteSlice, error) {
-	var dataLength = len(data)
-	var maskLength = len(mask)
-	if dataLength != maskLength {
-		return nil, errors.New("data and mask must have the same size")
-	}
-
-	result := make(ByteSlice, dataLength)
-	for i := 0; i < dataLength; i++ {
-		result[i] = data[i] & mask[i]
-	}
-	return result, nil
-}
-
-// InclusiveMerge apply OR operation on two byte arrays (must have the same size)
-func (data ByteSlice) InclusiveMerge(anotherData ByteSlice) (ByteSlice, error) {
-	var dataLength = len(data)
-	var anotherDataLength = len(anotherData)
-	if dataLength != anotherDataLength {
-		return nil, errors.New("data and anotherData must have the same size")
-	}
-
-	result := make(ByteSlice, dataLength)
-	for i := 0; i < dataLength; i++ {
-		result[i] = data[i] | anotherData[i]
-	}
-	return result, nil
-}
-
-// ExclusiveMerge apply XOR operation on two byte arrays (must have the same size)
-func (data ByteSlice) ExclusiveMerge(anotherData ByteSlice) (ByteSlice, error) {
-	var dataLength = len(data)
-	var anotherDataLength = len(anotherData)
-	if dataLength != anotherDataLength {
-		return nil, errors.New("data and anotherData must have the same size")
-	}
-
-	result := make(ByteSlice, dataLength)
-	for i := 0; i < dataLength; i++ {
-		result[i] = data[i] ^ anotherData[i]
-	}
-	return result, nil
-}
-
-// Not apply NOT operation to byte array
-func (data ByteSlice) Not() ByteSlice {
-	var dataLength = len(data)
-	result := make(ByteSlice, dataLength)
-	for i := 0; i < dataLength; i++ {
-		result[i] = ^data[i]
-	}
-	return result
-}
-
-func (data ByteSlice) leftPad(length int, filler byte) ByteSlice {
-	var dataLength = len(data)
+// LPad pads the left-side of a byte slice with a filler byte.
+func LPad(data []byte, length int, filler byte) []byte {
+	dataLength := len(data)
 	if length < 1 || length <= dataLength {
 		return data
 	}
-	var result = make(ByteSlice, length-dataLength, length)
+	result := make([]byte, length-dataLength)
 	for i := range result {
 		result[i] = filler
 	}
@@ -129,12 +77,13 @@ func (data ByteSlice) leftPad(length int, filler byte) ByteSlice {
 	return result
 }
 
-func (data ByteSlice) rightPad(length int, filler byte) ByteSlice {
-	var dataLength = len(data)
+// RPad pads the right-side of a byte slice with a filler byte.
+func RPad(data []byte, length int, filler byte) []byte {
+	dataLength := len(data)
 	if length < 1 || length <= dataLength {
 		return data
 	}
-	var result = make(ByteSlice, length-dataLength, length)
+	result := make([]byte, length-dataLength)
 	for i := range result {
 		result[i] = filler
 	}
@@ -142,7 +91,62 @@ func (data ByteSlice) rightPad(length int, filler byte) ByteSlice {
 	return result
 }
 
-func computeSize(lsbPosition, msbPosition uint64) uint64 {
-	var byteCount = float64(msbPosition-lsbPosition) / float64(byteLength)
-	return uint64(math.Ceil(byteCount))
+// Unset apply AND operation on a byte slice with an "unset" byte slice (must have the same size).
+func Unset(data, unsetData []byte) ([]byte, error) {
+	var dataLength = len(data)
+	var unsetDataLength = len(unsetData)
+	if dataLength != unsetDataLength {
+		return nil, errors.New("data and unsetData must have the same size")
+	}
+
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = data[i] & unsetData[i]
+	}
+	return result, nil
+}
+
+// Set apply OR operation on a byte slice with an "set" byte slice (must have the same size).
+func Set(data, setData []byte) ([]byte, error) {
+	dataLength := len(data)
+	setDataLength := len(setData)
+	if dataLength != setDataLength {
+		return nil, errors.New("data and setData must have the same size")
+	}
+
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = data[i] | setData[i]
+	}
+	return result, nil
+}
+
+// Toogle apply XOR operation on a byte slice with an "toogle" byte slice (must have the same size).
+func Toogle(data, toogleData []byte) ([]byte, error) {
+	dataLength := len(data)
+	toogleDataLength := len(toogleData)
+	if dataLength != toogleDataLength {
+		return nil, errors.New("data and toogleData must have the same size")
+	}
+
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = data[i] ^ toogleData[i]
+	}
+	return result, nil
+}
+
+// Flip apply NOT operation to a byte slice to flip it.
+func Flip(data []byte) []byte {
+	dataLength := len(data)
+	result := make([]byte, dataLength)
+	for i := 0; i < dataLength; i++ {
+		result[i] = ^data[i]
+	}
+	return result
+}
+
+func computeSize(leastSignificantBit, mostSignificantBit uint64) uint64 {
+	count := float64(mostSignificantBit-leastSignificantBit) / float64(maxBitsLength)
+	return uint64(math.Ceil(count))
 }
