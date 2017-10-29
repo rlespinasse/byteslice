@@ -1,9 +1,5 @@
-# Byteness 
-
-Byte[s who support endia]ness
-
-Manipulate Byte arrays with endianess support
+# byteslice
 
 ## Status
-image:https://travis-ci.org/rlespinasse/byteness.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/byteness"]
-image:https://coveralls.io/repos/github/rlespinasse/byteness/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteness?branch=master"]
+image:https://travis-ci.org/rlespinasse/byteslice.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/byteslice"]
+image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteslice?branch=master"]
