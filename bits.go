@@ -6,8 +6,8 @@ const (
 	maxMostSignificantBit  = maxBitsLength - 1
 )
 
-// RBitState get the state of a specific bit of the little endian ordered data byte.
-func RBitState(data byte, bit uint8) byte {
+// RBit get a specific bit of the little endian ordered data byte.
+func RBit(data byte, bit uint8) byte {
 	return (data >> bit & 0x01) << bit
 }
 

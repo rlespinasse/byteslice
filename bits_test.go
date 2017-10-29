@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var tcRBitState = []struct {
+var tcRBit = []struct {
 	name   string
 	data   byte
 	bit    uint8
@@ -14,13 +14,13 @@ var tcRBitState = []struct {
 	{"get low bit", 0xf0, 0, 0},
 }
 
-func TestRBitState(t *testing.T) {
+func TestRBit(t *testing.T) {
 	var val byte
-	for _, tc := range tcRBitState {
+	for _, tc := range tcRBit {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RBitState(tc.data, tc.bit)
+			val = RBit(tc.data, tc.bit)
 			if val != (tc.result) {
-				t.Errorf("RBitState(%x, %v) was %x, should be %x",
+				t.Errorf("RBit(%x, %v) was %x, should be %x",
 					tc.data, tc.bit,
 					val,
 					tc.result)
@@ -29,12 +29,12 @@ func TestRBitState(t *testing.T) {
 	}
 }
 
-func BenchmarkRBitState(b *testing.B) {
+func BenchmarkRBit(b *testing.B) {
 	var val byte
-	for _, tc := range tcRBitState {
+	for _, tc := range tcRBit {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RBitState(tc.data, tc.bit)
+				val = RBit(tc.data, tc.bit)
 			}
 		})
 	}
