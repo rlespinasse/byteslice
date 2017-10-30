@@ -16,3 +16,10 @@ func ExampleRUnset() {
 	fmt.Printf("%x\n", RUnset(data, unsetData))
 	// Output: 8811aa
 }
+
+func ExampleRToogle() {
+	data := []byte{0xDA, 0x99, 0xBA}
+	toogleData := []byte{0xAD, 0x11, 0xAB}
+	fmt.Printf("%x\n", RToogle(data, toogleData))
+	// Output: 778811
+}
