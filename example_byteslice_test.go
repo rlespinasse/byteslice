@@ -35,8 +35,14 @@ func ExampleSet() {
 	data2 := []byte{0x00}
 	val, err := Set(data1, data2)
 	if err == nil || val != nil {
-		log.Println("Unset with two byte slices of different size needs to return an error and no value")
+		log.Println("Set with two byte slices of different size needs to return an error and no value")
 	}
 	fmt.Printf("%x\n", val)
 	// Output:
+}
+
+func ExampleFlip() {
+	data := []byte{0x55, 0xDA, 0xBA}
+	fmt.Printf("%x\n", Flip(data))
+	// Output: aa2545
 }
