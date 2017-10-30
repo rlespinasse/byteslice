@@ -29,3 +29,14 @@ func ExampleUnset() {
 	fmt.Printf("%x\n", val)
 	// Output:
 }
+
+func ExampleSet() {
+	data1 := []byte{0x00, 0x00}
+	data2 := []byte{0x00}
+	val, err := Set(data1, data2)
+	if err == nil || val != nil {
+		log.Println("Unset with two byte slices of different size needs to return an error and no value")
+	}
+	fmt.Printf("%x\n", val)
+	// Output:
+}
