@@ -22,3 +22,11 @@ func ExampleRShift() {
 	fmt.Printf("%x\n", RShift(data, shift))
 	// Output: 0000da
 }
+
+func ExampleRPad() {
+	data := []byte{0xDA}
+	length := 2
+	filler := byte(0x00)
+	fmt.Printf("%x\n", RPad(data, length, filler))
+	// Output: da00
+}
