@@ -23,3 +23,11 @@ func ExampleRToogle() {
 	fmt.Printf("%x\n", RToogle(data, toogleData))
 	// Output: 778811
 }
+
+func ExampleRSubset() {
+	data := []byte{0xDA, 0x99, 0xBA}
+	leastSignificantBit := (uint64)(100)
+	mostSignificantBit := (uint64)(101)
+	fmt.Printf("%x\n", RSubset(data, leastSignificantBit, mostSignificantBit))
+	// Output:
+}
