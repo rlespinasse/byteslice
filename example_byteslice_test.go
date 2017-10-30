@@ -27,5 +27,5 @@ func ExampleUnset() {
 		log.Println("Unset with two byte slices of different size needs to return an error and no value")
 	}
 	fmt.Printf("%x\n", val)
-	// Output: []
+	// Output:
 }
