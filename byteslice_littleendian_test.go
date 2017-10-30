@@ -85,28 +85,28 @@ func BenchmarkRSet(b *testing.B) {
 	}
 }
 
-var tcRToogle = []struct {
+var tcRToggle = []struct {
 	name       string
 	data       []byte
-	toogleData []byte
+	toggleData []byte
 	result     []byte
 }{
 	{"equal length slices", []byte{0xDA, 0x99, 0xBA}, []byte{0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11}},
 	{"data longer", []byte{0x77, 0x88, 0x11, 0xAD, 0x11, 0xAB}, []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
-	{"toogleData longer", []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
+	{"toggleData longer", []byte{0xDA, 0x99, 0xBA}, []byte{0x77, 0x88, 0x11, 0xAD, 0x11, 0xAB}, []byte{0x77, 0x88, 0x11, 0x77, 0x88, 0x11}},
 	{"data empty", []byte{}, []byte{0xAD, 0x11, 0xAB}, []byte{0xAD, 0x11, 0xAB}},
-	{"toogleData empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
+	{"toggleData empty", []byte{0xDA, 0x99, 0xBA}, []byte{}, []byte{0xDA, 0x99, 0xBA}},
 	{"empty slices", []byte{}, []byte{}, []byte{}},
 }
 
-func TestRToogle(t *testing.T) {
+func TestRToggle(t *testing.T) {
 	var val []byte
-	for _, tc := range tcRToogle {
+	for _, tc := range tcRToggle {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RToogle(tc.data, tc.toogleData)
+			val = RToggle(tc.data, tc.toggleData)
 			if !reflect.DeepEqual(val, tc.result) {
-				t.Errorf("RToogle(%x, %x) was %x, should be %x",
-					tc.data, tc.toogleData,
+				t.Errorf("RToggle(%x, %x) was %x, should be %x",
+					tc.data, tc.toggleData,
 					val,
 					tc.result)
 			}
@@ -114,12 +114,12 @@ func TestRToogle(t *testing.T) {
 	}
 }
 
-func BenchmarkRToogle(b *testing.B) {
+func BenchmarkRToggle(b *testing.B) {
 	var val []byte
-	for _, tc := range tcRToogle {
+	for _, tc := range tcRToggle {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RToogle(tc.data, tc.toogleData)
+				val = RToggle(tc.data, tc.toggleData)
 			}
 		})
 	}
