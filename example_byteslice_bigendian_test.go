@@ -10,10 +10,10 @@ func ExampleLSet() {
 	// Output: bada55
 }
 
-func ExampleLToogle() {
+func ExampleLToggle() {
 	data := []byte{0xAB, 0xCB, 0x44}
 	setData := []byte{0x11, 0x11, 0x11}
 
-	fmt.Printf("%x\n", LToogle(data, setData))
+	fmt.Printf("%x\n", LToggle(data, setData))
 	// Output: bada55
 }
