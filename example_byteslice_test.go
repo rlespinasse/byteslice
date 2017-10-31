@@ -17,7 +17,7 @@ func ExampleLPad() {
 }
 
 func ExampleUnset() {
-	data := []byte{0xba, 0xda, 0x55}
+	data := []byte{0xBA, 0xDA, 0x55}
 	zeroes := []byte{0x00, 0x00, 0x00}
 
 	dat, err := Unset(data, zeroes)
