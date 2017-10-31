@@ -17,10 +17,10 @@ func ExampleLPad() {
 }
 
 func ExampleUnset() {
-	data := []byte{0xDE, 0xAD, 0xBE, 0xEF}
-	zeroes := []byte{0x00, 0x00, 0x00, 0x00}
+	data := []byte{0xba, 0xda, 0x55}
+	zeroes := []byte{0x00, 0x00, 0x00}
 
 	dat, err := Unset(data, zeroes)
 	fmt.Println(err, dat)
-	// Output: <nil> [0 0 0 0]
+	// Output: <nil> [0 0 0]
 }
