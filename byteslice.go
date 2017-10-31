@@ -121,17 +121,17 @@ func Set(data, setData []byte) ([]byte, error) {
 	return result, nil
 }
 
-// Toogle apply XOR operation on a byte slice with an "toogle" byte slice (must have the same size).
-func Toogle(data, toogleData []byte) ([]byte, error) {
+// Toggle apply XOR operation on a byte slice with an "toggle" byte slice (must have the same size).
+func Toggle(data, toggleData []byte) ([]byte, error) {
 	dataLength := len(data)
-	toogleDataLength := len(toogleData)
-	if dataLength != toogleDataLength {
-		return nil, errors.New("data and toogleData must have the same size")
+	toggleDataLength := len(toggleData)
+	if dataLength != toggleDataLength {
+		return nil, errors.New("data and toggleData must have the same size")
 	}
 
 	result := make([]byte, dataLength)
 	for i := 0; i < dataLength; i++ {
-		result[i] = data[i] ^ toogleData[i]
+		result[i] = data[i] ^ toggleData[i]
 	}
 	return result, nil
 }
