@@ -33,17 +33,17 @@ func RSet(data, setData []byte) []byte {
 	return result
 }
 
-// RToogle apply XOR operation on a byte slice with an "toogle" byte slice using little endian order.
-func RToogle(data, toogleData []byte) []byte {
+// RToggle apply XOR operation on a byte slice with an "toggle" byte slice using little endian order.
+func RToggle(data, toggleData []byte) []byte {
 	dataLength := len(data)
-	toogleDataLength := len(toogleData)
+	toggleDataLength := len(toggleData)
 
 	operationLength := dataLength
-	if toogleDataLength > dataLength {
-		operationLength = toogleDataLength
+	if toggleDataLength > dataLength {
+		operationLength = toggleDataLength
 	}
 
-	result, _ := Toogle(LPad(data, operationLength, 0x00), LPad(toogleData, operationLength, 0x00))
+	result, _ := Toggle(LPad(data, operationLength, 0x00), LPad(toggleData, operationLength, 0x00))
 	return result
 }
 

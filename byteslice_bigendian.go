@@ -32,17 +32,17 @@ func LSet(data, setData []byte) []byte {
 	return result
 }
 
-// LToogle apply XOR operation on a byte slice with an "toogle" byte slice using big endian order.
-func LToogle(data, toogleData []byte) []byte {
+// LToggle apply XOR operation on a byte slice with an "toggle" byte slice using big endian order.
+func LToggle(data, toggleData []byte) []byte {
 	dataLength := len(data)
-	toogleDataLength := len(toogleData)
+	toggleDataLength := len(toggleData)
 
 	operationLength := dataLength
-	if toogleDataLength > dataLength {
-		operationLength = toogleDataLength
+	if toggleDataLength > dataLength {
+		operationLength = toggleDataLength
 	}
 
-	result, _ := Toogle(RPad(data, operationLength, 0x00), RPad(toogleData, operationLength, 0x00))
+	result, _ := Toggle(RPad(data, operationLength, 0x00), RPad(toggleData, operationLength, 0x00))
 	return result
 }
 

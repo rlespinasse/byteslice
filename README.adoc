@@ -5,11 +5,13 @@ image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=m
 
 == How to
 
+Run `make help` to see the available commands.
+
 === test it with coverage
 
 [source,shell]
 -----
-$ go test -coverprofile=/tmp/byteslice-cover .
+$ make test
 ok  	github.com/rlespinasse/byteslice	0.007s	coverage: 100.0% of statements
 -----
 
@@ -17,7 +19,7 @@ ok  	github.com/rlespinasse/byteslice	0.007s	coverage: 100.0% of statements
 
 [source,shell]
 -----
-$ go test -bench=. .
+$ make bench
 goos: ...
 goarch: ...
 pkg: github.com/rlespinasse/byteslice

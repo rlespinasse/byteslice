@@ -214,10 +214,10 @@ func TestSetError(t *testing.T) {
 	}
 }
 
-func TestToogleError(t *testing.T) {
-	val, err := Toogle([]byte{0x00, 0x00}, []byte{0x00})
+func TestToggleError(t *testing.T) {
+	val, err := Toggle([]byte{0x00, 0x00}, []byte{0x00})
 	if err == nil || val != nil {
-		t.Errorf("Toogle with two byte slices of different size needs to return an error and no value")
+		t.Errorf("Toggle with two byte slices of different size needs to return an error and no value")
 	}
 }
 
