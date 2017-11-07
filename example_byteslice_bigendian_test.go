@@ -11,9 +11,9 @@ func ExampleLSet() {
 }
 
 func ExampleLUnset() {
-	data := []byte{0xAA, 0xCA, 0x55}
-	setData := []byte{0x10, 0x12}
+	data := []byte{0xBA, 0xDA, 0x55}
+	setData := []byte{0xBA, 0xDA}
 
 	fmt.Printf("%x\n", LUnset(data, setData))
-	// Output: 000255
+	// Output: bada55
 }
