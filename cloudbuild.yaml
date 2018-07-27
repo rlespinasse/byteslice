@@ -9,10 +9,9 @@ steps:
   env: ['GOPATH=.']
 - name: 'ubuntu'
   args: ['$GOPATH/bin/goveralls', '-coverprofile=coverage.out', '-repotoken', '$COVERALLS_TOKEN']
-  env: [
-    'GOPATH=.',
-    'CI_NAME=cloudbuild',
-    'CI_BUILD_NUMBER=$BUILD_ID',
-    'CI_BUILD_URL=https://console.cloud.google.com/cloud-build/builds?project=$PROJECT_ID',
-    'CI_BRANCH=$BRANCH_NAME'
-  ]
+  env:
+  - GOPATH=.
+  - CI_NAME=cloudbuild
+  - CI_BUILD_NUMBER=$BUILD_ID
+  - CI_BUILD_URL=https://console.cloud.google.com/cloud-build/builds?project=$PROJECT_ID
+  - CI_BRANCH=$BRANCH_NAME
