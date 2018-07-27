@@ -1,9 +1,9 @@
 steps:
-- name: 'gcr.io/cloud-builders/go'
+- name: 'gcr.io/cloud-builders/go:debian'
   args: ['get', 'github.com/mattn/goveralls']
   env:
   - GOPATH=.
-- name: 'gcr.io/cloud-builders/go'
+- name: 'gcr.io/cloud-builders/go:debian'
   args: ['test', '-v', '-bench=.', './...']
   env:
   - GOPATH=.
