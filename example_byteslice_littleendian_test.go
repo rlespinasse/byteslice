@@ -18,3 +18,10 @@ func ExampleRUnset() {
 	fmt.Printf("%x\n", output)
 	// Output: 110100
 }
+
+func ExampleRSubset() {
+	data := []byte{0xDA, 0x99, 0xBA}
+	output := RSubset(data, 6, 17)
+	fmt.Printf("%x\n", output)
+	// Output: 0a66
+}
