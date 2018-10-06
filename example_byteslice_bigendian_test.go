@@ -17,3 +17,12 @@ func ExampleLToggle() {
 	fmt.Printf("%x\n", LToggle(data, setData))
 	// Output: bada55
 }
+
+func ExampleLUnset() {
+	data := []byte{0x11, 0x11, 0x10}
+	unsetData := []byte{0x01, 0x01}
+
+	output := LUnset(data, unsetData)
+	fmt.Printf("%x\n", output)
+	// Output: 010110
+}
