@@ -74,3 +74,11 @@ func ExampleSet() {
 	fmt.Printf("%x\n", output)
 	// Output: dbbbbb
 }
+
+func ExampleFlip() {
+	data := []byte{0xDA, 0x99, 0xBA}
+
+	output := Flip(data)
+	fmt.Printf("%x\n", output)
+	// Output: 256645
+}
