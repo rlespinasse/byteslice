@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+var (
+	values []byte
+)
+
 var tcReverse = []struct {
 	name   string
 	data   []byte
@@ -17,14 +21,13 @@ var tcReverse = []struct {
 }
 
 func TestReverse(t *testing.T) {
-	var val []byte
 	for _, tc := range tcReverse {
 		t.Run(tc.name, func(t *testing.T) {
-			val = Reverse(tc.data)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = Reverse(tc.data)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("Reverse(%x) was %x, should be %x",
 					tc.data,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -32,11 +35,10 @@ func TestReverse(t *testing.T) {
 }
 
 func BenchmarkReverse(b *testing.B) {
-	var val []byte
 	for _, tc := range tcReverse {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = Reverse(tc.data)
+				values = Reverse(tc.data)
 			}
 		})
 	}
@@ -56,14 +58,13 @@ var tcLShift = []struct {
 }
 
 func TestLShift(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLShift {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LShift(tc.data, tc.shift)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LShift(tc.data, tc.shift)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LShift(%x, %v) was %x, should be %x",
 					tc.data, tc.shift,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -71,11 +72,10 @@ func TestLShift(t *testing.T) {
 }
 
 func BenchmarkLShift(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLShift {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LShift(tc.data, tc.shift)
+				values = LShift(tc.data, tc.shift)
 			}
 		})
 	}
@@ -95,14 +95,13 @@ var tcRShift = []struct {
 }
 
 func TestRShift(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRShift {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RShift(tc.data, tc.shift)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RShift(tc.data, tc.shift)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RShift(%x, %v) was %x, should be %x",
 					tc.data, tc.shift,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -110,11 +109,10 @@ func TestRShift(t *testing.T) {
 }
 
 func BenchmarkRShift(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRShift {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RShift(tc.data, tc.shift)
+				values = RShift(tc.data, tc.shift)
 			}
 		})
 	}
@@ -135,14 +133,13 @@ var tcLPad = []struct {
 }
 
 func TestLPad(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLPad {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LPad(tc.data, tc.length, tc.filler)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LPad(tc.data, tc.length, tc.filler)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LPad(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.length, tc.filler,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -150,11 +147,10 @@ func TestLPad(t *testing.T) {
 }
 
 func BenchmarkLPad(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLPad {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LPad(tc.data, tc.length, tc.filler)
+				values = LPad(tc.data, tc.length, tc.filler)
 			}
 		})
 	}
@@ -175,14 +171,13 @@ var tcRPad = []struct {
 }
 
 func TestRPad(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRPad {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RPad(tc.data, tc.length, tc.filler)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RPad(tc.data, tc.length, tc.filler)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RPad(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.length, tc.filler,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -190,11 +185,10 @@ func TestRPad(t *testing.T) {
 }
 
 func BenchmarkRPad(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRPad {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RPad(tc.data, tc.length, tc.filler)
+				values = RPad(tc.data, tc.length, tc.filler)
 			}
 		})
 	}
@@ -203,21 +197,21 @@ func BenchmarkRPad(b *testing.B) {
 func TestUnsetError(t *testing.T) {
 	val, err := Unset([]byte{0x00, 0x00}, []byte{0x00})
 	if err == nil || val != nil {
-		t.Errorf("Unset with two byte slices of different size needs to return an error and no value")
+		t.Errorf("Unset with two byte slices of different size needs to return an error and no values")
 	}
 }
 
 func TestSetError(t *testing.T) {
 	val, err := Set([]byte{0x00, 0x00}, []byte{0x00})
 	if err == nil || val != nil {
-		t.Errorf("Set with two byte slices of different size needs to return an error and no value")
+		t.Errorf("Set with two byte slices of different size needs to return an error and no values")
 	}
 }
 
 func TestToggleError(t *testing.T) {
 	val, err := Toggle([]byte{0x00, 0x00}, []byte{0x00})
 	if err == nil || val != nil {
-		t.Errorf("Toggle with two byte slices of different size needs to return an error and no value")
+		t.Errorf("Toggle with two byte slices of different size needs to return an error and no values")
 	}
 }
 
@@ -231,14 +225,13 @@ var tcFlip = []struct {
 }
 
 func TestFlip(t *testing.T) {
-	var val []byte
 	for _, tc := range tcFlip {
 		t.Run(tc.name, func(t *testing.T) {
-			val = Flip(tc.data)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = Flip(tc.data)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("Flip(%x) was %x, should be %x",
 					tc.data,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -246,11 +239,10 @@ func TestFlip(t *testing.T) {
 }
 
 func BenchmarkFlip(b *testing.B) {
-	var val []byte
 	for _, tc := range tcFlip {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = Flip(tc.data)
+				values = Flip(tc.data)
 			}
 		})
 	}

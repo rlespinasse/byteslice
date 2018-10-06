@@ -1,7 +1,8 @@
 = byteslice
 
-image:https://travis-ci.org/rlespinasse/byteslice.svg?branch=master["Build Status", link="https://travis-ci.org/rlespinasse/byteslice"]
-image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=master["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteslice?branch=master"]
+image:https://travis-ci.org/rlespinasse/byteslice.svg?branch=v0["Build Status", link="https://travis-ci.org/rlespinasse/byteslice"]
+image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=v0["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteslice?branch=v0"]
+image:https://godoc.org/github.com/rlespinasse/byteslice?status.svg["GoDoc", link="https://godoc.org/github.com/rlespinasse/byteslice"]
 
 == How to
 
@@ -23,13 +24,9 @@ $ make bench
 goos: ...
 goarch: ...
 pkg: github.com/rlespinasse/byteslice
-BenchmarkRBitState/get_low_bit_of_high_nibble-8         	2000000000	         1.99 ns/op
-BenchmarkRBitState/get_low_bit-8                        	2000000000	         1.96 ns/op
+BenchmarkRBit/get_low_bit_of_high_nibble-8              2000000000               1.76 ns/op
+BenchmarkRBit/get_low_bit-8                             2000000000               1.76 ns/op
 ...
 PASS
-ok  	github.com/rlespinasse/byteslice	158.442s
+ok      github.com/rlespinasse/byteslice        154.701s
 -----
-
-== Documentation Site
-
-See https://godoc.org/github.com/rlespinasse/byteslice

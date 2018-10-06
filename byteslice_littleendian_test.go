@@ -20,14 +20,13 @@ var tcRUnset = []struct {
 }
 
 func TestRUnset(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRUnset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RUnset(tc.data, tc.unsetData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RUnset(tc.data, tc.unsetData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RUnset(%x, %x) was %x, should be %x",
 					tc.data, tc.unsetData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -35,11 +34,10 @@ func TestRUnset(t *testing.T) {
 }
 
 func BenchmarkRUnset(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRUnset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RUnset(tc.data, tc.unsetData)
+				values = RUnset(tc.data, tc.unsetData)
 			}
 		})
 	}
@@ -60,14 +58,13 @@ var tcRSet = []struct {
 }
 
 func TestRSet(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRSet {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RSet(tc.data, tc.setData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RSet(tc.data, tc.setData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RSet(%x, %x) was %x, should be %x",
 					tc.data, tc.setData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -75,11 +72,10 @@ func TestRSet(t *testing.T) {
 }
 
 func BenchmarkRSet(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRSet {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RSet(tc.data, tc.setData)
+				values = RSet(tc.data, tc.setData)
 			}
 		})
 	}
@@ -100,14 +96,13 @@ var tcRToggle = []struct {
 }
 
 func TestRToggle(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRToggle {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RToggle(tc.data, tc.toggleData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RToggle(tc.data, tc.toggleData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RToggle(%x, %x) was %x, should be %x",
 					tc.data, tc.toggleData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -115,11 +110,10 @@ func TestRToggle(t *testing.T) {
 }
 
 func BenchmarkRToggle(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRToggle {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RToggle(tc.data, tc.toggleData)
+				values = RToggle(tc.data, tc.toggleData)
 			}
 		})
 	}
@@ -143,14 +137,13 @@ var tcRSubset = []struct {
 }
 
 func TestRSubset(t *testing.T) {
-	var val []byte
 	for _, tc := range tcRSubset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = RSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = RSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("RSubset(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.leastSignificantBit, tc.mostSignificantBit,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -158,11 +151,10 @@ func TestRSubset(t *testing.T) {
 }
 
 func BenchmarkRSubset(b *testing.B) {
-	var val []byte
 	for _, tc := range tcRSubset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
+				values = RSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
 			}
 		})
 	}

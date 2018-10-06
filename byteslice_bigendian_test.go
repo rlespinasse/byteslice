@@ -20,14 +20,13 @@ var tcLUnset = []struct {
 }
 
 func TestLUnset(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLUnset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LUnset(tc.data, tc.unsetData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LUnset(tc.data, tc.unsetData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LUnset(%x, %x) was %x, should be %x",
 					tc.data, tc.unsetData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -35,11 +34,10 @@ func TestLUnset(t *testing.T) {
 }
 
 func BenchmarkLUnset(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLUnset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LUnset(tc.data, tc.unsetData)
+				values = LUnset(tc.data, tc.unsetData)
 			}
 		})
 	}
@@ -60,14 +58,13 @@ var tcLSet = []struct {
 }
 
 func TestLSet(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLSet {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LSet(tc.data, tc.setData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LSet(tc.data, tc.setData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LSet(%x, %x) was %x, should be %x",
 					tc.data, tc.setData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -75,11 +72,10 @@ func TestLSet(t *testing.T) {
 }
 
 func BenchmarkLSet(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLSet {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LSet(tc.data, tc.setData)
+				values = LSet(tc.data, tc.setData)
 			}
 		})
 	}
@@ -100,14 +96,13 @@ var tcLToggle = []struct {
 }
 
 func TestLToggle(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLToggle {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LToggle(tc.data, tc.toggleData)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LToggle(tc.data, tc.toggleData)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LToggle(%x, %x) was %x, should be %x",
 					tc.data, tc.toggleData,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -115,11 +110,10 @@ func TestLToggle(t *testing.T) {
 }
 
 func BenchmarkLToggle(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLToggle {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LToggle(tc.data, tc.toggleData)
+				values = LToggle(tc.data, tc.toggleData)
 			}
 		})
 	}
@@ -143,14 +137,13 @@ var tcLSubset = []struct {
 }
 
 func TestLSubset(t *testing.T) {
-	var val []byte
 	for _, tc := range tcLSubset {
 		t.Run(tc.name, func(t *testing.T) {
-			val = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
-			if !reflect.DeepEqual(val, tc.result) {
+			values = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
+			if !reflect.DeepEqual(values, tc.result) {
 				t.Errorf("LSubset(%x, %v, %v) was %x, should be %x",
 					tc.data, tc.leastSignificantBit, tc.mostSignificantBit,
-					val,
+					values,
 					tc.result)
 			}
 		})
@@ -158,11 +151,10 @@ func TestLSubset(t *testing.T) {
 }
 
 func BenchmarkLSubset(b *testing.B) {
-	var val []byte
 	for _, tc := range tcLSubset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
+				values = LSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
 			}
 		})
 	}

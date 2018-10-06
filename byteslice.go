@@ -11,7 +11,7 @@ func Reverse(data []byte) []byte {
 		return data
 	}
 	sliceLength := len(data)
-	sliceHalfLength := int(math.Floor(float64(sliceLength / 2)))
+	sliceHalfLength := int(float64(sliceLength / 2))
 	reversedSlice := make([]byte, sliceLength)
 
 	for i := 0; i <= sliceHalfLength; i++ {

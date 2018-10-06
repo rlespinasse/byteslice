@@ -4,6 +4,10 @@ import (
 	"testing"
 )
 
+var (
+	value byte
+)
+
 var tcRBit = []struct {
 	name   string
 	data   byte
@@ -30,11 +34,10 @@ func TestRBit(t *testing.T) {
 }
 
 func BenchmarkRBit(b *testing.B) {
-	var val byte
 	for _, tc := range tcRBit {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RBit(tc.data, tc.bit)
+				value = RBit(tc.data, tc.bit)
 			}
 		})
 	}
@@ -67,11 +70,10 @@ func TestRBitsSubset(t *testing.T) {
 }
 
 func BenchmarkRBitsSubset(b *testing.B) {
-	var val byte
 	for _, tc := range tcRBitsSubset {
 		b.Run(tc.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				val = RBitsSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
+				value = RBitsSubset(tc.data, tc.leastSignificantBit, tc.mostSignificantBit)
 			}
 		})
 	}
