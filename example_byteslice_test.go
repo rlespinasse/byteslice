@@ -50,3 +50,11 @@ func ExampleLShift() {
 	fmt.Printf("%x\n", output)
 	// Output: 99ba00
 }
+
+func ExampleRShift() {
+	data := []byte{0xDA, 0x99, 0xBA}
+
+	output := RShift(data, 8)
+	fmt.Printf("%x\n", output)
+	// Output: 00da99
+}
