@@ -33,3 +33,12 @@ func ExampleToggle_simple() {
 	fmt.Printf("%x\n", output)
 	// Output: 010101
 }
+
+func ExampleUnset() {
+	data := []byte{0x01, 0x11, 0x00}
+	unsetData := []byte{0x01, 0x01, 0x01}
+
+	output, _ := Unset(data, unsetData)
+	fmt.Printf("%x\n", output)
+	// Output: 010100
+}
