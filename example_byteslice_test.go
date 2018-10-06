@@ -42,3 +42,11 @@ func ExampleUnset() {
 	fmt.Printf("%x\n", output)
 	// Output: 010100
 }
+
+func ExampleLShift() {
+	data := []byte{0xDA, 0x99, 0xBA}
+
+	output := LShift(data, 8)
+	fmt.Printf("%x\n", output)
+	// Output: 99ba00
+}
