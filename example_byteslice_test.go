@@ -65,3 +65,12 @@ func ExampleRShift() {
 	fmt.Printf("%x\n", output)
 	// Output: 00da99
 }
+
+func ExampleSet() {
+	data := []byte{0xDA, 0x99, 0xBA}
+	setData := []byte{0x11, 0x22, 0x33}
+
+	output, _ := Set(data, setData)
+	fmt.Printf("%x\n", output)
+	// Output: dbbbbb
+}
