@@ -25,3 +25,12 @@ func ExampleRSubset() {
 	fmt.Printf("%x\n", output)
 	// Output: 0a66
 }
+
+func ExampleRToggle() {
+	data := []byte{0xDA, 0x99, 0xBA}
+	toogleData := []byte{0x77, 0x88, 0x11, 0xAD, 0x11, 0xAB}
+
+	output := RToggle(data, toogleData)
+	fmt.Printf("%x\n", output)
+	// Output: 778811778811
+}
