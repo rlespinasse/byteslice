@@ -26,3 +26,11 @@ func ExampleLUnset() {
 	fmt.Printf("%x\n", output)
 	// Output: 010110
 }
+
+func ExampleLSubset() {
+	data := []byte{0xDA, 0x99, 0xBA}
+
+	output := LSubset(data, 6, 17)
+	fmt.Printf("%x\n", output)
+	// Output: a660
+}
