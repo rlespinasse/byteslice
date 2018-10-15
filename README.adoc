@@ -3,6 +3,7 @@
 image:https://travis-ci.org/rlespinasse/byteslice.svg?branch=v0["Build Status", link="https://travis-ci.org/rlespinasse/byteslice"]
 image:https://coveralls.io/repos/github/rlespinasse/byteslice/badge.svg?branch=v0["Coverage Status", link="https://coveralls.io/github/rlespinasse/byteslice?branch=v0"]
 image:https://godoc.org/github.com/rlespinasse/byteslice?status.svg["GoDoc", link="https://godoc.org/github.com/rlespinasse/byteslice"]
+image:https://goreportcard.com/badge/github.com/rlespinasse/byteslice["Go Report Card", link="https://goreportcard.com/report/github.com/rlespinasse/byteslice"]
 
 == How to
 
