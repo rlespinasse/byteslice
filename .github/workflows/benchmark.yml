@@ -1,0 +1,43 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [v0]
+  pull_request:
+    branches: [v0]
+
+jobs:
+  benchmark:
+    name: Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+        id: go
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Run benchmark
+        run: go test -bench=. . | tee output.txt
+
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+
+      - name: Store benchmark result
+        # uses: rhysd/github-action-benchmark@v1
+        # Support go tabled benchmarks
+        # Waiting for https://github.com/rhysd/github-action-benchmark/pull/32
+        uses: rlespinasse/github-action-benchmark@v1.8.1-gofix
+        with:
+          tool: "go"
+          output-file-path: output.txt
+          external-data-json-path: ./cache/benchmark-data.json
+          fail-on-alert: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          comment-on-alert: true
